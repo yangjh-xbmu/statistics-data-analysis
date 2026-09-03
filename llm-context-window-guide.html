@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型上下文 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rule:last-child{border-bottom:none}
+  .rule .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rule .rt{font-size:16.5px}
+  .rule .rt b{font-weight:650}
+  .rule .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rule code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">学 习 手 册 · 溯 源 版</div>
+  <h1>大模型上下文</h1>
+  <p class="sub">Context Window —— 模型一次能「看见」的全部文本，也是它唯一的信息来源。</p>
+  <div class="meta">
+    <span class="chip">源自 Transformer · 2017</span>
+    <span class="chip">以 token 计量</span>
+    <span class="chip">输入与输出共享同一窗口</span>
+  </div>
+</header>
+
+<!-- ============ 01 它是什么 ============ -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么</h2>
+  <p class="lead">模型没有硬盘，也没有长期记忆——它只有一张<b>固定大小的桌子</b>。桌上（窗口内）的一切可见，桌外的一切等于不存在。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg">
+      <!-- window frame -->
+      <rect x="20" y="20" width="480" height="220" rx="12" fill="#FFFFFF" stroke="#C4633F" stroke-width="2"/>
+      <text x="40" y="52" class="svgtext" font-size="14" fill="#C4633F" font-weight="700">上下文窗口（一次请求的全部内容）</text>
+      <!-- segments inside -->
+      <rect x="40" y="68" width="200" height="34" rx="6" fill="#F7EBE4"/>
+      <text x="140" y="90" class="svgtext" font-size="12.5" fill="#C4633F" text-anchor="middle">系统提示 / 指令</text>
+      <rect x="40" y="110" width="290" height="34" rx="6" fill="#F1EDE7"/>
+      <text x="185" y="132" class="svgtext" font-size="12.5" fill="#78716C" text-anchor="middle">对话历史（逐轮累积）</text>
+      <rect x="40" y="152" width="380" height="34" rx="6" fill="#F1EDE7"/>
+      <text x="230" y="174" class="svgtext" font-size="12.5" fill="#78716C" text-anchor="middle">检索到的文档 / 粘贴的资料 / 工具定义</text>
+      <rect x="40" y="194" width="160" height="34" rx="6" fill="#C4633F"/>
+      <text x="120" y="216" class="svgtext" font-size="12.5" fill="#fff" text-anchor="middle">当前问题</text>
+      <!-- outside -->
+      <rect x="540" y="68" width="120" height="80" rx="10" fill="none" stroke="#A8A29E" stroke-dasharray="6 5"/>
+      <text x="600" y="102" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="middle">窗口之外</text>
+      <text x="600" y="122" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="middle">= 不存在</text>
+      <!-- timeline -->
+      <line x1="20" y1="286" x2="660" y2="286" stroke="#E8E3DC" stroke-width="2"/>
+      <text x="20" y="316" class="svgtext" font-size="12.5" fill="#78716C">2017</text>
+      <text x="20" y="278" class="svgtext" font-size="12" fill="#A8A29E">512</text>
+      <text x="180" y="316" class="svgtext" font-size="12.5" fill="#78716C">2020</text>
+      <text x="180" y="278" class="svgtext" font-size="12" fill="#A8A29E">2K</text>
+      <text x="360" y="316" class="svgtext" font-size="12.5" fill="#78716C">2023</text>
+      <text x="360" y="278" class="svgtext" font-size="12" fill="#A8A29E">100K</text>
+      <text x="620" y="316" class="svgtext" font-size="12.5" fill="#78716C" text-anchor="end">2025</text>
+      <text x="620" y="278" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="end">1M+</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 窗口内的一切共同竞争空间；下方为窗口大小演进（Transformer → GPT-3 → Claude 2 → 如今）</p>
+</section>
+
+<!-- ============ 02 核心机制 ============ -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心机制 —— 一条序列，共享预算</h2>
+  <p class="lead">所有内容被切成 <b>token</b>，拼成一条序列。窗口容量 <b>N = 输入 + 输出</b>，回答本身也在消耗这张桌子。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg">
+      <!-- budget bar -->
+      <text x="20" y="36" class="svgtext" font-size="14" fill="#292524" font-weight="600">窗口预算 N（如 200K tokens）</text>
+      <rect x="20" y="50" width="640" height="44" rx="8" fill="#F1EDE7" stroke="#E8E3DC"/>
+      <rect x="20" y="50" width="90" height="44" rx="0" fill="#F7EBE4"/>
+      <rect x="110" y="50" width="240" height="44" fill="#E9E2D9"/>
+      <rect x="350" y="50" width="170" height="44" fill="#F1EDE7"/>
+      <rect x="520" y="50" width="140" height="44" rx="0" fill="#C4633F"/>
+      <text x="65" y="77" class="svgtext" font-size="12" fill="#C4633F" text-anchor="middle">系统提示</text>
+      <text x="230" y="77" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">对话历史</text>
+      <text x="435" y="77" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">检索文档</text>
+      <text x="590" y="77" class="svgtext" font-size="12" fill="#fff" text-anchor="middle">输出（预留）</text>
+      <line x1="520" y1="42" x2="520" y2="102" stroke="#C4633F" stroke-dasharray="4 4"/>
+      <text x="520" y="30" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle">输入 ← | → 输出</text>
+      <!-- token note -->
+      <text x="20" y="150" class="svgtext" font-size="13.5" fill="#78716C">token ≠ 字数：</text>
+      <rect x="20" y="164" width="200" height="34" rx="6" fill="#FFFFFF" stroke="#E8E3DC"/>
+      <text x="120" y="186" class="svgtext" font-size="12.5" fill="#292524" text-anchor="middle">英文 ≈ 0.75 词 / token</text>
+      <rect x="240" y="164" width="200" height="34" rx="6" fill="#FFFFFF" stroke="#E8E3DC"/>
+      <text x="340" y="186" class="svgtext" font-size="12.5" fill="#292524" text-anchor="middle">中文 ≈ 1–2 字 / token</text>
+      <rect x="460" y="164" width="200" height="34" rx="6" fill="#FFFFFF" stroke="#E8E3DC"/>
+      <text x="560" y="186" class="svgtext" font-size="12.5" fill="#292524" text-anchor="middle">代码 / 表格更贵</text>
+      <!-- why quadratic -->
+      <text x="20" y="228" class="svgtext" font-size="13.5" fill="#A8A29E">为什么不能无限大：自注意力让每个 token 与所有 token 计算关系 → 计算量随长度平方增长（O(n²)）</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 出自 Transformer 论文的自注意力机制：长度翻倍，计算约 ×4</p>
+</section>
+
+<!-- ============ 03 关键现象 ============ -->
+<section>
+  <div class="secnum">03</div>
+  <h2>迷失在中间</h2>
+  <p class="lead">窗口大 ≠ 用得好。相关信息放在<b>开头或结尾</b>时模型表现最好，埋在<b>中间</b>则显著退化——U 型曲线。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- axes -->
+      <line x1="70" y1="240" x2="640" y2="240" stroke="#A8A29E" stroke-width="1.5"/>
+      <line x1="70" y1="240" x2="70" y2="30" stroke="#A8A29E" stroke-width="1.5"/>
+      <!-- U curve -->
+      <path d="M 85 70 C 200 60, 240 200, 355 210 C 470 220, 500 80, 625 60"
+            fill="none" stroke="#C4633F" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- dots -->
+      <circle cx="85" cy="70" r="6" fill="#C4633F"/>
+      <circle cx="355" cy="210" r="6" fill="#B4433A"/>
+      <circle cx="625" cy="60" r="6" fill="#C4633F"/>
+      <!-- labels -->
+      <text x="55" y="255" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">开头</text>
+      <text x="355" y="255" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">中间</text>
+      <text x="625" y="255" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">结尾</text>
+      <text x="640" y="272" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="end">相关信息所在位置 →</text>
+      <text x="62" y="36" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="end" transform="rotate(-90 62 36)">准确率</text>
+      <text x="105" y="58" class="svgtext" font-size="12" fill="#78716C">首因效应</text>
+      <text x="545" y="48" class="svgtext" font-size="12" fill="#78716C">近因效应</text>
+      <text x="355" y="232" class="svgtext" font-size="12" fill="#B4433A" text-anchor="middle">性能低谷</text>
+      <text x="355" y="288" class="svgtext" font-size="13" fill="#A8A29E" text-anchor="middle">多文档问答实验：只移动答案所在位置，其他不变（Liu et al. 2023）</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 即使是号称长上下文的模型，也逃不过这条 U 型曲线</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt">窗口是<b>输入 + 输出</b>的共享预算</div>
+      <div class="rd">让模型写长文，先扣掉输出预留的额度。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt">计量单位是 <b>token</b>，不是字数</div>
+      <div class="rd">中文约 1–2 字一个 token，代码和表格更贵。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt"><b>窗口大 ≠ 用得好</b></div>
+      <div class="rd">U 型曲线：关键信息放两端，别埋中间。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt">注意力 <b>O(n²)</b>——长上下文又慢又贵</div>
+      <div class="rd">每个 token 都要和所有 token 计算关系。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt">超限时<b>静默截断</b>，最旧的先掉</div>
+      <div class="rd">模型不会提醒你——它只是"忘了"最早的内容。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">
+      <div class="st">Attention Is All You Need</div>
+      <div class="sd">Transformer 论文 · Vaswani et al., 2017 · 自注意力与 O(n²) 复杂度，一切长度约束的源头</div>
+      <div class="sl">arxiv.org/abs/1706.03762</div>
+    </a>
+    <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">
+      <div class="st">Language Models are Few-Shot Learners（GPT-3 论文）</div>
+      <div class="sd">Brown et al., 2020 · "context window" 现代 LLM 用法的确立处（当时为 2048 tokens）</div>
+      <div class="sl">arxiv.org/abs/2005.14165</div>
+    </a>
+    <a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener">
+      <div class="st">Lost in the Middle: How Language Models Use Long Contexts</div>
+      <div class="sd">Liu et al., 2023（后发表于 TACL）· 第 03 节 U 型曲线的实验出处</div>
+      <div class="sl">arxiv.org/abs/2307.03172</div>
+    </a>
+    <a href="https://docs.claude.com/en/docs/build-with-claude/context-windows" target="_blank" rel="noopener">
+      <div class="st">Context Windows（Anthropic 官方文档）</div>
+      <div class="sd">实践视角 · 窗口构成、成本计算与长上下文提示建议</div>
+      <div class="sl">docs.claude.com/en/docs/build-with-claude/context-windows</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<footer>
+  本手册依据上述原始出处整理，生成于 2026-09-03。
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"上下文窗口的计量单位是什么？",
+   o:["字数（汉字个数）","token","字节（byte）","句子数量"],a:1,
+   e:"窗口按 <b>token</b> 计量。中文约 1–2 字一个 token，英文约 0.75 词一个 token（见第 02 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"以下哪一项不占用上下文窗口？",
+   o:["系统提示","对话历史","模型在训练中学到的参数知识","模型正在生成的回答"],a:2,
+   e:"训练知识存在<b>模型权重</b>里，不占窗口。窗口只装<b>当前这次请求的序列</b>：系统提示、历史、文档、问题、输出（见第 01 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"为什么上下文窗口不能无限扩大？",
+   o:["存储文本的硬盘太贵","自注意力要对每对 token 计算关系，计算量随长度平方增长","模型会拒绝过长的输入","互联网文本总量有限"],a:1,
+   e:"Transformer 的自注意力是 <b>O(n²)</b>：长度翻倍，计算约 ×4（见第 02 节底部注释）。"},
+  {lv:2,lt:"进阶 · 理解",q:"「Lost in the Middle」描述的现象是？",
+   o:["模型丢失窗口最开头的内容","相关信息埋在中间时，模型利用它的一致性显著下降","窗口超限时报错","模型无法处理超过 1M token 的输入"],a:1,
+   e:"U 型曲线：开头和结尾利用最好（首因/近因效应），<b>中间是性能低谷</b>（见第 03 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"长对话中，模型突然「忘了」你最初提的要求。最可能的原因是？",
+   o:["模型的记忆力随时间衰减","超出了窗口，最早的内容被静默截断","模型在偷懒","网络传输丢包"],a:1,
+   e:"超出窗口时<b>最旧的内容先被挤出去</b>，且过程是静默的——它不是「忘了」，是最早的内容已经不在桌上（见第 04 节铁律 5）。"},
+  {lv:3,lt:"挑战 · 应用",q:"RAG 场景：20 篇检索文档要放进上下文，其中 1 篇最相关。放哪里最好？",
+   o:["随机位置即可","正中间","开头或结尾","均匀分散在 20 篇中间"],a:2,
+   e:"按 U 型曲线，相关信息放<b>两端</b>利用率最高；埋在中间最容易被「迷失」（见第 03 节，出处 Liu et al. 2023）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——你已经掌握上下文窗口的核心。"
+        :score>=4?"不错——回到标错的章节，重看第 02、03 节的图。"
+        :"建议从第 01 节重新过一遍，重点理解「共享预算」和 U 型曲线。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>
