@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运算符与表达式 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+  .meta .chip code{font-family:var(--mono)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .lead code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+  .caption code{font-family:var(--mono)}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .opts .opt code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .explain code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:4px}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  .crumbs{font-size:13.5px;color:var(--ink3);margin-top:28px}
+  .crumbs a{color:var(--accent);text-decoration:none}
+  .crumbs .sep{margin:0 8px}
+  .pn{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;font-size:14px}
+  .pn a{color:var(--accent);text-decoration:none}
+
+  footer{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">运 算 符 与 容 器 · 01</div>
+  <h1>运算符与表达式</h1>
+  <p class="sub">运算符把值算成新值 —— 算什么，不看你写了哪个符号，看两边是什么类型。</p>
+  <div class="meta">
+    <span class="chip">除法 <code>/</code> 恒返回浮点数</span>
+    <span class="chip"><code>//</code> 向负无穷取整</span>
+    <span class="chip">类型不对 → TypeError</span>
+  </div>
+</header>
+
+<nav class="crumbs">
+  <a href="index.html">← 运算符与容器 · 系列路径</a>
+  <span class="sep">›</span><span>运算符与表达式</span>
+</nav>
+
+<!-- ============ 01 它是什么 ============ -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么 —— 值从哪里变出来</h2>
+  <p class="lead">运算符是<b>把值变成新值</b>的动作，一写一算叫一个表达式。七个算术符号先认全，剩下三个是留给统计用的。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 268" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>八个表达式与它们的结果</title>
+      <desc>八个方块，每个方块上方是表达式，下方是结果，包含加减乘除、整除、取余、乘方，以及一处会报 TypeError 的类型不匹配。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">上排是你写的，下排是它给的</text>
+
+      <rect x="20" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="72" class="svgmono" font-size="12" fill="#78716C">7 + 3</text>
+      <text x="36" y="100" class="svgmono" font-size="15" fill="#C4633F">10</text>
+
+      <rect x="183" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="72" class="svgmono" font-size="12" fill="#78716C">3 * 'un'</text>
+      <text x="199" y="100" class="svgmono" font-size="15" fill="#C4633F">'ununun'</text>
+
+      <rect x="346" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="362" y="72" class="svgmono" font-size="12" fill="#78716C">7 / 2</text>
+      <text x="362" y="100" class="svgmono" font-size="15" fill="#C4633F">3.5</text>
+
+      <rect x="509" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="525" y="72" class="svgmono" font-size="12" fill="#78716C">7 // 2</text>
+      <text x="525" y="100" class="svgmono" font-size="15" fill="#C4633F">3</text>
+
+      <rect x="20" y="130" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="158" class="svgmono" font-size="12" fill="#78716C">17 % 5</text>
+      <text x="36" y="186" class="svgmono" font-size="15" fill="#C4633F">2</text>
+
+      <rect x="183" y="130" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="158" class="svgmono" font-size="12" fill="#78716C">2 ** 10</text>
+      <text x="199" y="186" class="svgmono" font-size="15" fill="#C4633F">1024</text>
+
+      <rect x="346" y="130" width="151" height="74" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="362" y="158" class="svgmono" font-size="12" fill="#78716C">-7 // 2</text>
+      <text x="362" y="186" class="svgmono" font-size="15" fill="#C4633F">-4</text>
+
+      <rect x="509" y="130" width="151" height="74" rx="10" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="525" y="158" class="svgmono" font-size="12" fill="#78716C">'10' + 5</text>
+      <text x="525" y="186" class="svgmono" font-size="13" fill="#B4433A">TypeError</text>
+
+      <text x="20" y="240" class="svgtext" font-size="12.5" fill="#A8A29E">比较运算符 == != &lt; &lt;= &gt; &gt;= 给出 True / False；and / or / not 把条件组合起来。</text>
+      <text x="20" y="260" class="svgtext" font-size="12.5" fill="#A8A29E">这一页只讲「算」，比较与逻辑的用法留到下一次课的 for + if。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 除法 <code>/</code> 永远给浮点；<code>//</code> 向负无穷取整（不是向 0 截断）—— 这正是 -7 // 2 = -4、-7 % 2 = 1 的来由</p>
+</section>
+
+<!-- ============ 02 核心设计 ============ -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心设计 —— 结果由类型决定，不由符号决定</h2>
+  <p class="lead">同一个符号，两边是数字就做算术，两边是文本就做拼接。<b>类型不对，不是「算错了」，是根本没有这条运算法则。</b></p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>同一符号在数字与文本上的不同结果</title>
+      <desc>三行对照表：加号、乘号、除号分别作用在数字和文本上，前三者给出不同结果，除号作用在文本上直接报 TypeError。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">三行看明白：类型在管方向，符号只管动作</text>
+
+      <rect x="20" y="40" width="120" height="34" rx="8" fill="#F1EDE7"/>
+      <text x="80" y="62" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">符号</text>
+      <rect x="148" y="40" width="246" height="34" rx="8" fill="#F1EDE7"/>
+      <text x="271" y="62" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">两边是数字（int）</text>
+      <rect x="402" y="40" width="258" height="34" rx="8" fill="#F1EDE7"/>
+      <text x="531" y="62" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle">两边是文本（str）</text>
+
+      <rect x="20" y="82" width="120" height="52" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="80" y="114" class="svgmono" font-size="16" fill="#292524" text-anchor="middle">+</text>
+      <rect x="148" y="82" width="246" height="52" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="162" y="114" class="svgmono" font-size="12.5" fill="#292524">3 + 5 → <tspan fill="#C4633F">8</tspan></text>
+      <text x="362" y="114" class="svgtext" font-size="11.5" fill="#A8A29E">相加</text>
+      <rect x="402" y="82" width="258" height="52" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="416" y="114" class="svgmono" font-size="12.5" fill="#292524">'3' + '5' → <tspan fill="#C4633F">'35'</tspan></text>
+      <text x="628" y="114" class="svgtext" font-size="11.5" fill="#A8A29E">拼接</text>
+
+      <rect x="20" y="142" width="120" height="52" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="80" y="174" class="svgmono" font-size="16" fill="#292524" text-anchor="middle">*</text>
+      <rect x="148" y="142" width="246" height="52" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="162" y="174" class="svgmono" font-size="12.5" fill="#292524">3 * 2 → <tspan fill="#C4633F">6</tspan></text>
+      <text x="362" y="174" class="svgtext" font-size="11.5" fill="#A8A29E">相乘</text>
+      <rect x="402" y="142" width="258" height="52" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="416" y="174" class="svgmono" font-size="12.5" fill="#292524">'ab' * 2 → <tspan fill="#C4633F">'abab'</tspan></text>
+      <text x="628" y="174" class="svgtext" font-size="11.5" fill="#A8A29E">重复</text>
+
+      <rect x="20" y="202" width="120" height="52" rx="8" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="80" y="234" class="svgmono" font-size="16" fill="#B4433A" text-anchor="middle">/</text>
+      <rect x="148" y="202" width="246" height="52" rx="8" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="162" y="234" class="svgmono" font-size="12.5" fill="#292524">7 / 2 → <tspan fill="#C4633F">3.5</tspan></text>
+      <text x="362" y="234" class="svgtext" font-size="11.5" fill="#A8A29E">相除</text>
+      <rect x="402" y="202" width="258" height="52" rx="8" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="416" y="234" class="svgmono" font-size="12" fill="#B4433A">'ab' / 2 → TypeError</text>
+      <text x="628" y="234" class="svgtext" font-size="11.5" fill="#A8A29E">没有这条</text>
+
+      <text x="20" y="286" class="svgtext" font-size="12.5" fill="#A8A29E">同一批符号在数字上叫算术、在文本上叫拼接；文本除以数字根本没有定义，于是直接中断。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方对 TypeError 的说法是「类型不支持这个操作」—— <code>'10' + 5</code> 报的是 <code>can only concatenate str (not "int") to str</code>，想加就先 <code>int('10') + 5</code></p>
+</section>
+
+<!-- ============ 03 运行全程 ============ -->
+<section>
+  <div class="secnum">03</div>
+  <h2>运行全程 —— 先算，再格式化</h2>
+  <p class="lead">计算和显示是两件事：<b>运算符产出的是数字，f-string 才决定它长得像什么。</b>这也是为什么「保留两位小数」不该动计算过程。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 224" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>算出来的数字与写出来的文本</title>
+      <desc>左边是除法算出的浮点数，右边是 f-string 格式化后得到的两位小数字符串，中间用箭头连接。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">一次平均分，两个阶段</text>
+
+      <rect x="20" y="44" width="310" height="140" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="70" class="svgtext" font-size="12.5" fill="#78716C">① 算出来的是数字（float）</text>
+      <rect x="36" y="82" width="278" height="38" rx="6" fill="#F1EDE7"/>
+      <text x="48" y="106" class="svgmono" font-size="12" fill="#292524">avg = 2320 / 30</text>
+      <text x="48" y="146" class="svgmono" font-size="11.5" fill="#A8A29E">内存里是</text>
+      <text x="48" y="168" class="svgmono" font-size="12.5" fill="#C4633F">77.33333333333333</text>
+
+      <line x1="334" y1="114" x2="346" y2="114" stroke="#C4633F" stroke-width="1.5" marker-end="url(#op1)"/>
+
+      <rect x="350" y="44" width="310" height="140" rx="12" fill="#FBF7F4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="366" y="70" class="svgtext" font-size="12.5" fill="#C4633F">② 写出来的是文本（str）</text>
+      <rect x="366" y="82" width="278" height="38" rx="6" fill="#FFFFFF"/>
+      <text x="378" y="106" class="svgmono" font-size="12" fill="#292524">print(f"{avg:.2f}")</text>
+      <text x="378" y="146" class="svgtext" font-size="11.5" fill="#A8A29E">屏幕上显示</text>
+      <text x="378" y="168" class="svgmono" font-size="12.5" fill="#C4633F">77.33</text>
+
+      <text x="20" y="210" class="svgtext" font-size="12.5" fill="#A8A29E">浮点数存不住「看起来的位数」—— 位数是格式化决定的，不是计算决定的。</text>
+      <defs>
+        <marker id="op1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#C4633F" stroke-width="1.5"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <p class="caption">▲ <code>.2f</code> 是格式规格：定点、两位小数。<code>avg</code> 本身一个字节都没变，变的只是显示</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt"><code>/</code> 永远给浮点数，要整数商就用 <code>//</code></div>
+      <div class="rd"><code>//</code> 的结果<b>向负无穷取整</b>，不是向 0 截断：7 // 2 = 3，-7 // 2 = -4。余数跟着除数走，-7 % 2 = 1。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt">结果由类型决定，符号不对是 TypeError</div>
+      <div class="rd"><code>'10' + 5</code> 不是「算出 15 以外的东西」，而是<b>没有这条法则</b>；想相加先转换类型。<code>'3' + '5'</code> 得到的是 <code>'35'</code>。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt"><code>**</code> 比一元 <code>-</code> 优先级高</div>
+      <div class="rd">官方脚注：<code>-3**2</code> 被解释成 <code>-(3**2)</code>，结果是 -9；要 9 得写 <code>(-3)**2</code>。拿不准就加括号。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt">别拿 <code>round()</code> 当「四舍五入」，要位数就用 f-string</div>
+      <div class="rd">两个倍数同样接近时它<b>向偶数取整</b>：<code>round(2.5)</code> 是 2，<code>round(3.5)</code> 是 4；再加上二进制浮点本身的误差，显示位数应该交给 <code>f"{x:.2f}"</code>。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt"><code>=</code> 是赋值，<code>==</code> 才是比较</div>
+      <div class="rd">比较与逻辑运算给出 <code>True</code> / <code>False</code>，正好是下一课 <code>if</code> 与 <code>for</code> 的开关；混用 <code>=</code> 与 <code>==</code> 是本课最常见的低级错。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">
+      <div class="st">Python 速览 · 3.1 用作计算器</div>
+      <div class="sd">「除法运算 (/) 总是返回一个浮点数」；<code>//</code>「向下取整除法运算会丢弃小数部分」；「Python 用 <code>**</code> 运算符计算乘方」；「字符串可以用 <code>+</code> 合并（粘到一起），也可以用 <code>*</code> 重复」；脚注：<code>**</code> 比 <code>-</code> 优先级更高</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/introduction.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#numeric-types-int-float-complex" target="_blank" rel="noopener">
+      <div class="st">内置类型 · 数值类型</div>
+      <div class="sd">官方注脚原文：「结果总是向负无穷取整：<code>1//2</code> 是 <code>0</code>，<code>(-1)//2</code> 是 <code>-1</code>」—— 第 04 节铁律 1 那个 -4 的依据</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/stdtypes.html#numeric-types-int-float-complex</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/reference/expressions.html#operator-precedence" target="_blank" rel="noopener">
+      <div class="st">6. 表达式 · 运算符优先级</div>
+      <div class="sd">完整优先级表：<code>**</code> 高于一元 <code>-</code>，<code>* / // %</code> 同档，比较运算符低于算术运算符</div>
+      <div class="sl">docs.python.org/zh-cn/3/reference/expressions.html#operator-precedence</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html#formatted-string-literals" target="_blank" rel="noopener">
+      <div class="st">7. 输入与输出 · 格式化字符串字面值</div>
+      <div class="sd"><code>f"{avg:.2f}"</code> 的语法出处：字符串前缀 <code>f</code>，花括号内嵌表达式，冒号后接格式规格迷你语言</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/inputoutput.html#formatted-string-literals</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#round" target="_blank" rel="noopener">
+      <div class="st">内置函数 · round</div>
+      <div class="sd">round(x, n) 保留 n 位小数；两个倍数同样接近时「向偶数方向取整」—— 所以它不是四舍五入</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html#round</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<nav class="pn">
+  <span></span>
+  <a href="python-list-guide.html">下一页 · 列表 →</a>
+</nav>
+
+<footer>
+  本手册依据上述原始出处整理，其中数值结果均在本机 Python 3.13.14 实测 · 生成于 2026-09-16<br>
+  所属系列：运算符与容器（第 1 次课下半场）· <a href="index.html">返回概念地图</a> · 切分表见 <a href="_series/concepts.md">_series/concepts.md</a>
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"7 / 2 的结果是什么？",
+   o:["3","3.5","3.0","报错：除不尽"],a:1,
+   e:"官方教程原话：<b>除法运算 (/) 总是返回一个浮点数</b>，所以 7 / 2 是 3.5。要整数商用 <code>//</code>（见第 01、04 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"'3' + 5 会发生什么？",
+   o:["得到 8","得到 '35'","TypeError：str 与 int 不能相加","能算出结果，只是会留一条警告"],a:2,
+   e:"字符串的 <code>+</code> 是<b>拼接</b>，需要两边都是字符串；<code>'3' + '5'</code> 才是 <code>'35'</code>。想真的加，先 <code>int('3') + 5</code>（见第 02 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"-3 ** 2 等于多少？",
+   o:["9","6","-6","-9"],a:3,
+   e:"<b><code>**</code> 比一元 <code>-</code> 优先级高</b>，所以它被解释成 <code>-(3**2)</code>。要 9 就写 <code>(-3)**2</code>（见第 04 节铁律 3）。"},
+  {lv:2,lt:"进阶 · 理解",q:"17 份材料分给 5 个人，每人几份、剩几份？该用哪两个运算符，结果是多少？",
+   o:["2 和 3","3 和 2","3.4 和 0","4 和 -3"],a:1,
+   e:"<code>17 // 5</code> 得 3、<code>17 % 5</code> 得 2，官方示例正好用「向下取整的商 * 除数 + 余数」还原出 <code>5*3+2 = 17</code>（见第 01 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"-7 // 2 的结果是多少？",
+   o:["-3","-3.5","-4","4"],a:2,
+   e:"<code>//</code> 是<b>向下取整</b>—— 向负无穷走，不是向 0 截断。官方注脚原文：「结果总是向负无穷取整」。这也是 -7 % 2 = 1（不是 -1）的原因（见第 01、04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"round(2.5) 与 round(3.5) 分别得到什么？",
+   o:["3 和 4","2 和 4","2 和 3","3 和 3"],a:1,
+   e:'两个倍数同样接近时它<b>向偶数取整</b>，不是四舍五入。要「两位小数」这种显示需求，用 <code>f"{x:.2f}"</code> 格式化，别动计算（见第 03、04 节）。'}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——运算符这一层稳了，可以进列表。"
+        :score>=4?"不错——回到标错的章节，重点看第 02 的对照表和第 04 的铁律 1、4。"
+        :"建议从第 01 节重新过一遍，先记住三件事：/ 给浮点、// 向负无穷、类型不对就 TypeError。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

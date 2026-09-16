@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运算符与容器 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .lead code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .opts .opt code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .explain code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:4px}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">学 习 手 册 · 溯 源 版</div>
+  <h1>运算符与容器</h1>
+  <p class="sub">值怎么变，值怎么排 —— 运算符把值合成新值，容器把值排成结构。列表是一列，字典是一行，列表套字典就是一张表。</p>
+  <div class="meta">
+    <span class="chip">除法 <code style="font-family:var(--mono)">/</code> 恒返回浮点数</span>
+    <span class="chip">下标从 0 起，切片含头不含尾</span>
+    <span class="chip">列表套字典 = 一张表</span>
+  </div>
+</header>
+
+<!-- ============ 01 它是什么 ============ -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么 —— 值从哪里变出来</h2>
+  <p class="lead">运算符是<b>把值变成新值</b>的动作。同一批符号，作用在不同类型上给出不同结果——分不清类型，就分不清结果。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 268" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>八种运算符与它们的结果</title>
+      <desc>八个方块，每个方块上方是表达式，下方是结果，包含加减乘除、整除、取余、乘方，以及一处会报 TypeError 的类型不匹配。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">左边是你写的，右边是它给的</text>
+
+      <rect x="20" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="72" class="svgmono" font-size="12" fill="#78716C">7 + 3</text>
+      <text x="36" y="100" class="svgmono" font-size="15" fill="#C4633F">10</text>
+
+      <rect x="183" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="72" class="svgmono" font-size="12" fill="#78716C">3 * 'un'</text>
+      <text x="199" y="100" class="svgmono" font-size="15" fill="#C4633F">'ununun'</text>
+
+      <rect x="346" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="362" y="72" class="svgmono" font-size="12" fill="#78716C">7 / 2</text>
+      <text x="362" y="100" class="svgmono" font-size="15" fill="#C4633F">3.5</text>
+
+      <rect x="509" y="44" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="525" y="72" class="svgmono" font-size="12" fill="#78716C">7 // 2</text>
+      <text x="525" y="100" class="svgmono" font-size="15" fill="#C4633F">3</text>
+
+      <rect x="20" y="130" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="158" class="svgmono" font-size="12" fill="#78716C">7 % 2</text>
+      <text x="36" y="186" class="svgmono" font-size="15" fill="#C4633F">1</text>
+
+      <rect x="183" y="130" width="151" height="74" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="158" class="svgmono" font-size="12" fill="#78716C">2 ** 10</text>
+      <text x="199" y="186" class="svgmono" font-size="15" fill="#C4633F">1024</text>
+
+      <rect x="346" y="130" width="151" height="74" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="362" y="158" class="svgmono" font-size="12" fill="#78716C">-7 // 2</text>
+      <text x="362" y="186" class="svgmono" font-size="15" fill="#C4633F">-4</text>
+
+      <rect x="509" y="130" width="151" height="74" rx="10" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="525" y="158" class="svgmono" font-size="12" fill="#78716C">'10' + 5</text>
+      <text x="525" y="186" class="svgmono" font-size="13" fill="#B4433A">TypeError</text>
+
+      <text x="20" y="238" class="svgtext" font-size="12.5" fill="#A8A29E">比较运算符 == != &lt; &lt;= &gt; &gt;= 给出 True / False；and / or / not 把条件组合起来。</text>
+      <text x="20" y="258" class="svgtext" font-size="12.5" fill="#A8A29E">运算符不改变原来的值——它把值算成一个新值。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 除法 <code style="font-family:var(--mono)">/</code> 永远给浮点；<code style="font-family:var(--mono)">//</code> 向负无穷取整（不是向 0 截断）——这正是 -7 // 2 = -4、-7 % 2 = 1 的来由</p>
+</section>
+
+<!-- ============ 02 核心设计 ============ -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心设计 —— 取值的两条路</h2>
+  <p class="lead">容器是<b>一个名字装下多个值</b>。取出来只有两条路：<b>按位置</b>（列表，下标从 0 起）或<b>按名字</b>（字典，键必须唯一）。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 392" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>列表按位置取与字典按名字取</title>
+      <desc>上半部分是一列成绩的下标尺，标出正索引、负索引与切片范围；下半部分是字典示例，比较用下标取、用键取和用 get 取三种结果。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">同一批成绩，两种取法</text>
+
+      <text x="20" y="56" class="svgtext" font-size="12.5" fill="#78716C">列表 —— 按位置取（下标从 0 起）</text>
+      <rect x="116" y="68" width="100" height="44" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="166" y="96" class="svgmono" font-size="15" fill="#292524" text-anchor="middle">78</text>
+      <rect x="232" y="68" width="100" height="44" rx="8" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="282" y="96" class="svgmono" font-size="15" fill="#C4633F" text-anchor="middle">85</text>
+      <rect x="348" y="68" width="100" height="44" rx="8" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="398" y="96" class="svgmono" font-size="15" fill="#C4633F" text-anchor="middle">62</text>
+      <rect x="464" y="68" width="100" height="44" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="514" y="96" class="svgmono" font-size="15" fill="#292524" text-anchor="middle">91</text>
+      <text x="166" y="130" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">0</text>
+      <text x="282" y="130" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">1</text>
+      <text x="398" y="130" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">2</text>
+      <text x="514" y="130" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">3</text>
+      <text x="166" y="150" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">-4</text>
+      <text x="282" y="150" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">-3</text>
+      <text x="398" y="150" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">-2</text>
+      <text x="514" y="150" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">-1</text>
+
+      <text x="20" y="182" class="svgmono" font-size="12.5" fill="#78716C">s[0] → <tspan fill="#C4633F">78</tspan>　　s[-1] → <tspan fill="#C4633F">91</tspan>（倒数第一个）</text>
+      <text x="20" y="206" class="svgmono" font-size="12.5" fill="#78716C">s[1:3] → <tspan fill="#C4633F">[85, 62]</tspan>　含 1、不含 3 —— 半开区间</text>
+
+      <line x1="20" y1="228" x2="660" y2="228" stroke="#E8E3DC" stroke-width="1"/>
+
+      <text x="20" y="256" class="svgtext" font-size="12.5" fill="#78716C">字典 —— 按名字取（键唯一且不可变）</text>
+      <rect x="20" y="268" width="640" height="34" rx="8" fill="#FBF7F4" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="34" y="290" class="svgmono" font-size="12" fill="#292524">d = {"name": "王思远", "midterm": 78, "final": 82}</text>
+
+      <text x="20" y="328" class="svgmono" font-size="12.5" fill="#3D7A50">d["midterm"] → 78</text>
+      <text x="212" y="328" class="svgtext" font-size="12" fill="#78716C">✓ 键在，正常取</text>
+      <text x="20" y="350" class="svgmono" font-size="12.5" fill="#B4433A">d["总评"] → KeyError</text>
+      <text x="212" y="350" class="svgtext" font-size="12" fill="#78716C">✗ 键不在，直接中断</text>
+      <text x="20" y="372" class="svgmono" font-size="12.5" fill="#3D7A50">d.get("总评", 0) → 0</text>
+      <text x="212" y="372" class="svgtext" font-size="12" fill="#78716C">✓ 拿一个默认值，不中断</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方原文：切片「包含开始，但不包含结束」，所以 <code style="font-family:var(--mono)">s[:i] + s[i:]</code> 总等于 <code style="font-family:var(--mono)">s</code>；下标越界报 IndexError，切片越界自动截断</p>
+  <p class="caption" style="text-align:left;margin-top:18px;color:#78716C">一句带过（本次只需认得）：<b style="color:#292524">元组</b> <code style="font-family:var(--mono)">(78, 82)</code> 是不可变的一行，可以当字典的键；<b style="color:#292524">集合</b> <code style="font-family:var(--mono)">set([1, 1, 2])</code> → <code style="font-family:var(--mono)">{1, 2}</code> 是自动去重的一袋值，没有顺序。</p>
+</section>
+
+<!-- ============ 03 运行全程 ============ -->
+<section>
+  <div class="secnum">03</div>
+  <h2>运行全程 —— 列表套字典就是一张表</h2>
+  <p class="lead">表的两边是同一份东西：<b>列表的每一项 = 表的一行</b>，<b>字典的每个键 = 表的一列</b>。认下这一点，第 3 次课的 pandas 就只是换了一层皮。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 424" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>列表套字典与表格形态的对应</title>
+      <desc>左边是 Python 的列表套字典写法，右边是同一份数据的表格形态，下方是取出一列求平均值的四步流程。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">这里没有魔法，只有一行行地走</text>
+
+      <rect x="20" y="42" width="340" height="236" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="66" class="svgtext" font-size="12" fill="#78716C">Python 里：列表套字典</text>
+      <text x="36" y="94" class="svgmono" font-size="11.5" fill="#292524">rows = [</text>
+      <text x="36" y="113" class="svgmono" font-size="11.5" fill="#292524">  {"name": "王思远", "midterm": 78,</text>
+      <text x="36" y="132" class="svgmono" font-size="11.5" fill="#78716C">   "final": 82},</text>
+      <text x="36" y="151" class="svgmono" font-size="11.5" fill="#292524">  {"name": "李佳琪", "midterm": 85,</text>
+      <text x="36" y="170" class="svgmono" font-size="11.5" fill="#78716C">   "final": 88},</text>
+      <text x="36" y="189" class="svgmono" font-size="11.5" fill="#292524">  {"name": "张一鸣", "midterm": 62,</text>
+      <text x="36" y="208" class="svgmono" font-size="11.5" fill="#78716C">   "final": 71},</text>
+      <text x="36" y="227" class="svgmono" font-size="11.5" fill="#292524">]</text>
+      <text x="36" y="256" class="svgtext" font-size="11.5" fill="#C4633F">缩进只是排版，逗号才是分隔</text>
+
+      <rect x="380" y="42" width="280" height="236" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="396" y="66" class="svgtext" font-size="12" fill="#78716C">看起来：一张表</text>
+      <text x="396" y="96" class="svgmono" font-size="10.5" fill="#A8A29E">name</text>
+      <text x="492" y="96" class="svgmono" font-size="10.5" fill="#A8A29E">midterm</text>
+      <text x="576" y="96" class="svgmono" font-size="10.5" fill="#A8A29E">final</text>
+      <line x1="396" y1="106" x2="644" y2="106" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="396" y="132" class="svgmono" font-size="11.5" fill="#292524">王思远</text>
+      <text x="492" y="132" class="svgmono" font-size="11.5" fill="#292524">78</text>
+      <text x="576" y="132" class="svgmono" font-size="11.5" fill="#C4633F">82</text>
+      <text x="396" y="160" class="svgmono" font-size="11.5" fill="#292524">李佳琪</text>
+      <text x="492" y="160" class="svgmono" font-size="11.5" fill="#292524">85</text>
+      <text x="576" y="160" class="svgmono" font-size="11.5" fill="#C4633F">88</text>
+      <text x="396" y="188" class="svgmono" font-size="11.5" fill="#292524">张一鸣</text>
+      <text x="492" y="188" class="svgmono" font-size="11.5" fill="#292524">62</text>
+      <text x="576" y="188" class="svgmono" font-size="11.5" fill="#C4633F">71</text>
+      <line x1="396" y1="204" x2="644" y2="204" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="396" y="228" class="svgtext" font-size="11.5" fill="#78716C">列表的每一项 = 一行（个案）</text>
+      <text x="396" y="248" class="svgtext" font-size="11.5" fill="#78716C">字典的每个键 = 一列（变量）</text>
+      <text x="396" y="268" class="svgtext" font-size="11.5" fill="#C4633F">行列齐了，就是一张数据表</text>
+
+      <rect x="20" y="306" width="138" height="62" rx="10" fill="#F1EDE7"/>
+      <text x="34" y="330" class="svgmono" font-size="11.5" fill="#292524">for r in rows</text>
+      <text x="34" y="352" class="svgtext" font-size="11.5" fill="#78716C">① 一行一行取出</text>
+      <line x1="161" y1="337" x2="171" y2="337" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#s3a)"/>
+
+      <rect x="174" y="306" width="138" height="62" rx="10" fill="#F1EDE7"/>
+      <text x="188" y="330" class="svgmono" font-size="11.5" fill="#292524">r["final"]</text>
+      <text x="188" y="352" class="svgtext" font-size="11.5" fill="#78716C">② 按名字取出这一列</text>
+      <line x1="315" y1="337" x2="325" y2="337" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#s3a)"/>
+
+      <rect x="328" y="306" width="138" height="62" rx="10" fill="#F1EDE7"/>
+      <text x="342" y="330" class="svgmono" font-size="11.5" fill="#292524">sum / len</text>
+      <text x="342" y="352" class="svgtext" font-size="11.5" fill="#78716C">③ 累加 ÷ 计数</text>
+      <line x1="469" y1="337" x2="479" y2="337" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#s3a)"/>
+
+      <rect x="482" y="306" width="138" height="62" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="496" y="330" class="svgmono" font-size="11.5" fill="#C4633F">f"{avg:.2f}"</text>
+      <text x="496" y="352" class="svgtext" font-size="11.5" fill="#C4633F">④ 输出成一句话</text>
+
+      <text x="20" y="404" class="svgtext" font-size="12.5" fill="#C4633F">同一套流程跑 datasets/scores.csv：30 条记录 → 期中均分 75.43 · 期末均分 77.33 · 及格率 93.3%</text>
+      <defs>
+        <marker id="s3a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#A8A29E" stroke-width="1.5"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方教程对字典的定义：「可以把字典理解为键值对的集合，但字典的键必须是唯一的」</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt"><code>/</code> 永远给浮点数，要整数商就用 <code>//</code></div>
+      <div class="rd"><code>//</code> 的结果<b>向负无穷取整</b>，不是向 0 截断：7 // 2 = 3，-7 // 2 = -4。余数跟着除数走，-7 % 2 = 1。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt">下标从 0 起，切片<b>含头不含尾</b></div>
+      <div class="rd">取第 1、2 个用 <code>s[0:2]</code>。下标越界报 IndexError，切片越界不报错——只给你剩下的部分。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt">赋值不复制数据 —— <code>b = a</code> 之后改 b 就是改 a</div>
+      <div class="rd">官方原话：「简单赋值绝不会复制数据」。真要一份互不影响的副本，用切片 <code>a[:]</code> 做浅拷贝。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt">字典的键必须唯一且不可变</div>
+      <div class="rd">字符串、数字、元组可以当键，列表不行。<code>d[key]</code> 取不到会 KeyError，不确定有没有就用 <code>d.get(key, 默认值)</code>。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt">会改列表的方法<b>只动手、不返回结果</b></div>
+      <div class="rd"><code>append</code>、<code>sort</code>、<code>remove</code> 的返回值都是 None。写 <code>s = s.sort()</code> 会把整个列表换成 None。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">
+      <div class="st">Python 速览 · 3.1 用作计算器</div>
+      <div class="sd">「除法运算 (/) 总是返回一个浮点数」；<code>//</code> 向下取整、<code>%</code> 取余、<code>**</code> 乘方；字符串用 + 合并、用 * 重复；列表的索引与切片；「简单赋值绝不会复制数据」</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/introduction.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">
+      <div class="st">数据结构 · 5.1 列表详解</div>
+      <div class="sd">append / extend / insert / remove / pop / clear / index / count / sort / reverse / copy 的官方定义；「仅修改列表的方法都不会打印返回值 —— 它们返回默认值 None」</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/datastructures.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html#dictionaries" target="_blank" rel="noopener">
+      <div class="st">数据结构 · 5.5 字典</div>
+      <div class="sd">「键可以是任何不可变类型」「字典的键必须是唯一的」「花括号 {} 用于创建空字典」「提取不存在的键会引发 KeyError，可改用 get()」「list(d) 按插入次序」</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/datastructures.html#dictionaries</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#numeric-types-int-float-complex" target="_blank" rel="noopener">
+      <div class="st">内置类型 · 数值类型</div>
+      <div class="sd">官方注脚原文：「结果总是向负无穷取整：1//2 是 0，(-1)//2 是 -1」——第 01、04 节那个 -4 的依据</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/stdtypes.html#numeric-types-int-float-complex</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#common-sequence-operations" target="_blank" rel="noopener">
+      <div class="st">内置类型 · 序列通用操作</div>
+      <div class="sd">切片 s[i:j] 的正式定义：i &lt;= k &lt; j；负索引等价于 len(s) + i；i 或 j 越界时自动截断</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/stdtypes.html#common-sequence-operations</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">
+      <div class="st">内置函数 · len / sum / max / min / sorted</div>
+      <div class="sd">「一列数据」的最小统计工具箱：长度、求和、最值、排序（sorted 返回新列表，不动原列表）</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#round" target="_blank" rel="noopener">
+      <div class="st">内置函数 · round</div>
+      <div class="sd">round(x, n) 保留 n 位小数；两个倍数同样接近时「向偶数方向取整」，且二进制浮点本身有误差——所以它不适合当"四舍五入"用，格式化输出请用 f-string</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html#round</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/reference/lexical_analysis.html#f-strings" target="_blank" rel="noopener">
+      <div class="st">词法分析 · f-字符串</div>
+      <div class="sd">f"{avg:.2f}" 的语法出处：字符串前缀 f，花括号内嵌表达式，冒号后接格式规格（.2f = 两位小数）</div>
+      <div class="sl">docs.python.org/zh-cn/3/reference/lexical_analysis.html#f-strings</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/statistics.html#statistics.mean" target="_blank" rel="noopener">
+      <div class="st">statistics · mean</div>
+      <div class="sd">样本算术平均数：sum(data) / len(data) 的正式版本。注意 mean 与 numpy.mean 标准差的 ddof 差异留到第 4 次课</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/statistics.html#statistics.mean</div>
+    </a>
+    <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html" target="_blank" rel="noopener">
+      <div class="st">pandas · DataFrame（下一个战场）</div>
+      <div class="sd">本次手写的「列表套字典」，第 3 次课用一行 pd.read_csv 得到同样的东西，而且自带行列索引</div>
+      <div class="sl">pandas.pydata.org/docs/reference/api/pandas.DataFrame.html</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<footer>
+  本手册依据上述原始出处整理，其中数值结果均在本机 Python 3.13.14 实测 · 生成于 2026-09-16 · 对应《Python 基础语法 + pandas 四次课方案》第 1 次课<b>下半场</b><br>
+  上半场（环境、Notebook、报错、变量与类型）见 <a href="python-basics-guide.html">python-basics-guide.html</a>
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"7 / 2 的结果是什么？",
+   o:["3","3.5","3.0","报错：除不尽"],a:1,
+   e:"官方教程原话：<b>除法运算 (/) 总是返回一个浮点数</b>，所以 7 / 2 是 3.5。要整数商用 <code>//</code>（见第 01、04 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"s = [3, 1, 4, 1, 5]，s[-1] 得到什么？",
+   o:["3","1","IndexError","5"],a:3,
+   e:"<b>负数索引从 -1 开始</b>，-1 就是最后一个（官方原话：「注意，-0 和 0 一样，因此，负数索引从 -1 开始」）。这里是 5（见第 02 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"仍是 s = [3, 1, 4, 1, 5]，s[1:3] 取到哪几个元素？",
+   o:["[1, 4, 1]","[3, 1]","[1, 4]","[4, 1, 5]"],a:2,
+   e:"切片是<b>含头不含尾</b>：取下标 1 和 2，共两个。<code>s[:i] + s[i:]</code> 总等于 <code>s</code>，就是这条规则的推论（见第 02、04 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:'d = {"name": "王思远", "final": 82}，下面哪一句一定会报 KeyError？',
+   o:['d.get("midterm")','"midterm" in d','len(d)','d["midterm"]'],a:3,
+   e:"<b>下标取不存在的键就引发 KeyError</b>；<code>get()</code> 在键不存在时返回 None 或你给的默认值，<code>in</code> 只做判断（见第 02、04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"7 // 2 和 -7 // 2 分别是多少？",
+   o:["3 和 -3","3.5 和 -3.5","3 和 -4","3 和 4"],a:2,
+   e:"<code>//</code> 是<b>向下取整</b>——向负无穷走，不是向 0 截断。官方注脚原文：「结果总是向负无穷取整：1//2 是 0，(-1)//2 是 -1」。这也是 -7 % 2 = 1（不是 -1）的原因（见第 01、04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"rows 是「列表套字典」，要算 30 人的期末平均分，哪一句能跑通？",
+   o:['rows["final"].sum() / len(rows)','sum(r["final"] for r in rows) / len(rows)','sum(rows["final"]) / 30','rows["final"].mean()'],a:1,
+   e:"列表<b>只能按下标取</b>，<code>rows[\"final\"]</code> 会直接 TypeError；必须一行一行走过去，从每行里按名字取那一列。这正是第 3 次课 pandas 要一行替你做完的事（见第 03 节）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——运算符与容器的地基铺好了，可以直接进下半程：流程、函数与文件。"
+        :score>=4?"不错——回到标错的章节，把第 02 的两条取值路径和第 03 的那张表再看一遍。"
+        :"建议从第 01 节重新过一遍，先记住三件事：/ 给浮点、下标从 0 起、字典用 get。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

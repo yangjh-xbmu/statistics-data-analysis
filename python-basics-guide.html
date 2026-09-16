@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="5qD8t7VL4p1vVpzbPkgqVo">
+<head data-page-node-id="Cbb73txHNGNDVkhqytWhZR">
+<meta charset="UTF-8" data-page-node-id="MlZhRfjoQTlTFe0NFJ1cUC">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="18f1JFWBa9vAyICQ2ChIXM">
+<title>Python 起步 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body data-page-node-id="s6W7sEAWWL9ojB8ebJG7K1">
+<div class="wrap" data-page-node-id="nRjmCnkbdECtMj5AFEFjaM">
+
+<header data-page-node-id="BSrH6mXKCur8MvVjNfHK23">
+  <div class="eyebrow" data-page-node-id="nhkR6QcjKNJ5PhgolGNLtX">学 习 手 册 · 溯 源 版</div>
+  <h1 data-page-node-id="c9X6a3GMHHmejCjJpDofHK">Python 起步</h1>
+  <p class="sub" data-page-node-id="eKrqgF2YwGAYc3JCGoVWN1">一次运行的全貌 —— 你写的是文档，跑的是内核，看到的叫输出。</p>
+  <div class="meta" data-page-node-id="KmDG7LKwBRE2tXYkpS1NAq">
+    <span class="chip" data-page-node-id="PD3E40ePMSJZ9MqKFRIzGO">当前稳定版 3.14.7（2026-08-05）</span>
+    <span class="chip" data-page-node-id="Av0lk0egDs7AxxuaiksSzA">内核 = 常驻内存的 REPL</span>
+    <span class="chip" data-page-node-id="6uWgUjJ65jyRQAG2B2lHOh">报错先看最后一行</span>
+  </div>
+</header>
+
+<!-- ============ 01 它是什么 ============ -->
+<section data-page-node-id="YnIoBxjvKFb3Fqp96cC9RJ">
+  <div class="secnum" data-page-node-id="3V0QNVOhSEWZ3jk0khHShE">01</div>
+  <h2 data-page-node-id="VCV5cDABD3wUor3aPHo2Iv">它是什么</h2>
+  <p class="lead" data-page-node-id="SybxTBUDMHNuv9fQCdbYrm">左右两边是两样东西：<b data-page-node-id="pBlAMHV1OKxhLg4mBfuSEG">你写的文档</b>（.ipynb，只是文本）和<b data-page-node-id="sBaG8LhYhhumf3xFjHyKJB">在跑的内核</b>（一个常驻内存的进程）。代码从不在文件里运行——文件只是被内核读走的原料。</p>
+
+  <div class="card" data-page-node-id="JPVUd3X8ENV9Wz1maw31C7">
+    <svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" data-page-node-id="4btfcsBEnmEYrkaqAU3tZD">
+      <title>文档与内核的关系</title>
+      <desc data-page-node-id="b97vertHDfmVNwfmgpivHW">左边是 Notebook 文档，由 Markdown 单元格、代码单元格和保存的输出组成；右边是常驻内存的内核，内含读-求值-打印循环和内存中的对象。</desc>
+      <rect x="20" y="44" width="300" height="232" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1" data-page-node-id="jZdKkUsPMhFBELHhxOZ4tW"/>
+      <text x="36" y="70" class="svgtext" font-size="12.5" fill="#78716C" data-page-node-id="R6Ni9HqCzbCgzqRgNZdsSD">文档 .ipynb（你写的）</text>
+      <rect x="36" y="84" width="268" height="34" rx="6" fill="#F1EDE7" data-page-node-id="wa9W2REpmevxjMU7MZXYPf"/>
+      <text x="48" y="105" class="svgtext" font-size="12" fill="#78716C" data-page-node-id="F4XjhNdPXW5Z4CohksJrw7">Markdown 单元格 · 说明文字</text>
+      <rect x="36" y="126" width="268" height="60" rx="6" fill="#FBF7F4" stroke="#E8E3DC" stroke-width="1" data-page-node-id="xM8AowdINZoS5jGTOEe3uA"/>
+      <text x="48" y="148" class="svgmono" font-size="12" fill="#292524" data-page-node-id="N08FMpAAP9HsiA1yy736BE">score = 78</text>
+      <text x="48" y="172" class="svgmono" font-size="12" fill="#292524" data-page-node-id="Y5Z6up3sUNojuYGdYs2AAh">print(score + 12)</text>
+      <rect x="36" y="194" width="268" height="62" rx="6" fill="#F7EBE4" data-page-node-id="ryBShkDpwYDeChVOuQIi2t"/>
+      <text x="48" y="216" class="svgtext" font-size="11.5" fill="#C4633F" data-page-node-id="FEy3VMSDHTDwAPkIP4wBFT">输出（保存下来的结果）</text>
+      <text x="48" y="240" class="svgmono" font-size="12" fill="#C4633F" data-page-node-id="YsW748oC6AIjgZ6pLTKqRa">90</text>
+
+      <rect x="360" y="44" width="300" height="232" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1" data-page-node-id="BkM64x3fwFdv7PH5AcHbJ7"/>
+      <text x="376" y="70" class="svgtext" font-size="12.5" fill="#78716C" data-page-node-id="inz7m2NVUoVdDCtKc3LHsq">内核（一个常驻内存的进程）</text>
+      <rect x="376" y="84" width="82" height="44" rx="6" fill="#F1EDE7" data-page-node-id="XHl9FIBlK8FC8lwUG9X5FK"/>
+      <text x="417" y="106" class="svgtext" font-size="12.5" fill="#292524" text-anchor="middle" dominant-baseline="central" data-page-node-id="nccfKF4mwSejxqOA5DDyp5">读</text>
+      <rect x="466" y="84" width="82" height="44" rx="6" fill="#F1EDE7" data-page-node-id="SSCsp6wDw81tGXL4nXdMQo"/>
+      <text x="507" y="106" class="svgtext" font-size="12.5" fill="#292524" text-anchor="middle" dominant-baseline="central" data-page-node-id="A8o6A8riUhyx3y3djCGvXA">求值</text>
+      <rect x="556" y="84" width="88" height="44" rx="6" fill="#F1EDE7" data-page-node-id="Nb14ZWCMmre7fdQ1J4rAZE"/>
+      <text x="600" y="106" class="svgtext" font-size="12.5" fill="#292524" text-anchor="middle" dominant-baseline="central" data-page-node-id="uNYkJGGQs7rYwFWkKPwGfR">打印</text>
+      <path d="M417 130 L417 146 L600 146 L600 132" fill="none" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#a1)" data-page-node-id="0UHDhekswu2CYzAh7qTnCq"/>
+      <text x="508" y="164" class="svgtext" font-size="11.5" fill="#A8A29E" text-anchor="middle" data-page-node-id="3kKJAajD2zCZiwWIoLFp0N">反复执行</text>
+      <rect x="376" y="176" width="268" height="80" rx="6" fill="#F7EBE4" data-page-node-id="tSkBT1StGqlkjvpi3Qc7mP"/>
+      <text x="388" y="198" class="svgtext" font-size="11.5" fill="#C4633F" data-page-node-id="e2pxO1t359wMtIuLUlOPAE">内存里的对象（跨单元格存活）</text>
+      <rect x="388" y="208" width="110" height="26" rx="6" fill="#FFFFFF" data-page-node-id="756zk4zeMfrYm8bFDHFLFb"/>
+      <text x="400" y="221" class="svgmono" font-size="11.5" fill="#292524" dominant-baseline="central" data-page-node-id="zdsXFUlG0Zk5rLQa9LGK7p">score → 78</text>
+      <rect x="506" y="208" width="126" height="26" rx="6" fill="#FFFFFF" data-page-node-id="Cmnf6aPsklPwIBHBpJbSSl"/>
+      <text x="518" y="221" class="svgmono" font-size="11.5" fill="#292524" dominant-baseline="central" data-page-node-id="rF91JjDcx3PTJt5mvpWSIf">name → 王思远</text>
+
+      <line x1="324" y1="160" x2="352" y2="160" stroke="#C4633F" stroke-width="1.5" marker-end="url(#a1)" data-page-node-id="RILA8Evy3X9ZBNwMIz6EY8"/>
+      <text x="338" y="150" class="svgtext" font-size="11" fill="#C4633F" text-anchor="middle" data-page-node-id="MCmmdBf8ht12t2IcXPtQaH">运行</text>
+      <text x="20" y="306" class="svgtext" font-size="12.5" fill="#A8A29E" data-page-node-id="PCGhGxJHcntMmu0oEt2002">编辑器与内核是两个独立程序，靠消息通信；关掉内核，内存里的对象随之消失。</text>
+      <defs data-page-node-id="O3OFHj17KcR1kBalfxYlx2">
+        <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="21JmHrXowtxi4LNwaDRMD1">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#C4633F" stroke-width="1.5" data-page-node-id="iBrXFllbTJ6NDsXxfj6D31"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="5D3ANLQyjBoh1Xn6g6wIM1">▲ 文档保存代码与输出，内核保存活着的对象——只有后者能被继续使用</p>
+</section>
+
+<!-- ============ 02 核心设计 ============ -->
+<section data-page-node-id="oHQ3XiPQGJMDtX9gkLyfD4">
+  <div class="secnum" data-page-node-id="DadxPfCL0wfak4h3V8R4uC">02</div>
+  <h2 data-page-node-id="be2pkeiWWBR1uaJz4r9CHD">核心设计 —— 名字指向对象</h2>
+  <p class="lead" data-page-node-id="vRaIhIRj1SjqjO4OiB3H2Q">赋值不是把值装进盒子，而是<b data-page-node-id="BzLK4HFCu30FRSjLKoxcJn">让一个名字指向一个对象</b>。所以 <code style="font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px" data-page-node-id="A9GoMD1i97uAX08Fs2cjpg">b = a</code> 之后，两个名字指的是同一份数据。</p>
+
+  <div class="card" data-page-node-id="jekC8BOb48ipC8jRotIFJR">
+    <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img" data-page-node-id="06lGSnIi4HrKI1GdBqZvDO">
+      <title>名称绑定示意</title>
+      <desc data-page-node-id="vF29FEslBlPK1Btg31U8U5">左侧名称空间里的名字通过箭头指向右侧内存中的对象；下方说明两个名字可以指向同一个列表。</desc>
+      <text x="20" y="26" class="svgtext" font-size="14" font-weight="600" fill="#292524" data-page-node-id="UM1mRuKT3tdKn5eKmQOQPr">名字（怎么叫）与对象（是什么）分开存在</text>
+      <rect x="40" y="48" width="210" height="170" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1" data-page-node-id="oKfRM0ro5M5VlaGlFmgdHC"/>
+      <text x="56" y="74" class="svgtext" font-size="12.5" fill="#78716C" data-page-node-id="1AXLBFgzkanuAUuWVQqCbL">名称空间 · 名字</text>
+      <rect x="56" y="88" width="178" height="32" rx="6" fill="#F1EDE7" data-page-node-id="d63QMhP9BAduvS7F0KsPBp"/>
+      <text x="68" y="104" class="svgmono" font-size="12.5" fill="#292524" dominant-baseline="central" data-page-node-id="1rnd31FtLmb8IWVvPEpNSy">score</text>
+      <rect x="56" y="126" width="178" height="32" rx="6" fill="#F1EDE7" data-page-node-id="5FODkMQGwjT2LsnoSyOtEt"/>
+      <text x="68" y="142" class="svgmono" font-size="12.5" fill="#292524" dominant-baseline="central" data-page-node-id="UM4IY1eZs3khBHZrFI7RJb">name</text>
+      <rect x="56" y="164" width="178" height="32" rx="6" fill="#F1EDE7" data-page-node-id="gjasMAtFeZfniu6t7AQT5T"/>
+      <text x="68" y="180" class="svgmono" font-size="12.5" fill="#292524" dominant-baseline="central" data-page-node-id="XJMf8tTDMJKOnPHLchYhnC">is_pass</text>
+
+      <rect x="430" y="48" width="210" height="170" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1" data-page-node-id="jaysWJAWrA6FSb4UuTO4gB"/>
+      <text x="446" y="74" class="svgtext" font-size="12.5" fill="#78716C" data-page-node-id="XerRVpJ2WxgpOLmFYTiJS0">内存 · 对象</text>
+      <rect x="446" y="88" width="178" height="32" rx="6" fill="#F7EBE4" data-page-node-id="NaSPN18okHEuBeaCczrCnK"/>
+      <text x="458" y="104" class="svgmono" font-size="12.5" fill="#C4633F" dominant-baseline="central" data-page-node-id="JKT110mrbP2VqYzQcigyWA">78  (int)</text>
+      <rect x="446" y="126" width="178" height="32" rx="6" fill="#F7EBE4" data-page-node-id="KtsRXRe0vgtc6R6cKi5JSH"/>
+      <text x="458" y="142" class="svgmono" font-size="12.5" fill="#C4633F" dominant-baseline="central" data-page-node-id="enx3LcFvdEEEws22FMWI8I">「王思远」 (str)</text>
+      <rect x="446" y="164" width="178" height="32" rx="6" fill="#F7EBE4" data-page-node-id="QVOHzlj7OM0Ag4XJszES7t"/>
+      <text x="458" y="180" class="svgmono" font-size="12.5" fill="#C4633F" dominant-baseline="central" data-page-node-id="jSctEX3mUHbsNB4Cdm97Y2">True  (bool)</text>
+
+      <line x1="236" y1="104" x2="422" y2="104" stroke="#C4633F" stroke-width="1.5" marker-end="url(#a2)" data-page-node-id="Jz3FcB9f34pPZLyIOMn98J"/>
+      <line x1="236" y1="142" x2="422" y2="142" stroke="#C4633F" stroke-width="1.5" marker-end="url(#a2)" data-page-node-id="aTupBd4PRkO2LEJTjZBW3N"/>
+      <line x1="236" y1="180" x2="422" y2="180" stroke="#C4633F" stroke-width="1.5" marker-end="url(#a2)" data-page-node-id="D5okSsecVeP56xVRTrFH3B"/>
+      <text x="330" y="200" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="yltHPDm7QHMHfHYlUepnGV">= 是绑定动作，不是拷贝</text>
+
+      <rect x="40" y="236" width="600" height="84" rx="12" fill="#FBF7F4" stroke="#E9D5C9" stroke-width="1" data-page-node-id="D5hrVqIouMksAHdGq4UClm"/>
+      <text x="60" y="260" class="svgmono" font-size="12" fill="#78716C" data-page-node-id="Vgx2ipPi8niSZrtzVnlBB5">b = a 之后：</text>
+      <rect x="164" y="248" width="54" height="22" rx="6" fill="#F1EDE7" data-page-node-id="V9HuDMPELYp1OUGeMhIKwB"/>
+      <text x="191" y="259" class="svgmono" font-size="12" fill="#292524" text-anchor="middle" dominant-baseline="central" data-page-node-id="71UBE4wnmDXg9HIvTwy1Pp">a</text>
+      <rect x="164" y="278" width="54" height="22" rx="6" fill="#F1EDE7" data-page-node-id="olzJTe6lQ93P5HanbXHuGj"/>
+      <text x="191" y="289" class="svgmono" font-size="12" fill="#292524" text-anchor="middle" dominant-baseline="central" data-page-node-id="zavjfpCJOkcmgQf9lGV81z">b</text>
+      <path d="M218 259 L286 259 L286 274" fill="none" stroke="#A8A29E" stroke-width="1.5" data-page-node-id="yJyo6gsdmMVsKuoLY6Z1iE"/>
+      <path d="M218 289 L286 289 L286 274" fill="none" stroke="#A8A29E" stroke-width="1.5" data-page-node-id="EJbXWfMovITXMAUITScYdx"/>
+      <line x1="286" y1="274" x2="348" y2="274" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#a4)" data-page-node-id="GOoJ7tqbnt4vgYOiF82YnI"/>
+      <rect x="356" y="252" width="130" height="44" rx="8" fill="#C4633F" data-page-node-id="mft0JCGhFGxqLE4coWnQhO"/>
+      <text x="421" y="274" class="svgmono" font-size="12" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" data-page-node-id="3qppBLYSjounjHVRELQLEE">[1, 2, 3]</text>
+      <text x="500" y="274" class="svgtext" font-size="12" fill="#78716C" dominant-baseline="central" data-page-node-id="YpRZdTDxjiRc2GZag4lfX5">同一份数据</text>
+      <text x="60" y="308" class="svgtext" font-size="12" fill="#78716C" data-page-node-id="rDlDRf3Azrd2cTnMJweHQy">两个名字，一个对象：改 b 就是改 a，因为根本没有第二个列表。</text>
+      <defs data-page-node-id="uu7lBAock7nTfim3dniios">
+        <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="QQN1s45iCeEAzQ9xHXA0SQ">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#C4633F" stroke-width="1.5" data-page-node-id="mouOdwUewDankpXghMxBM6"/>
+        </marker>
+        <marker id="a4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="45lEnJPgem3afwSXMMggTR">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#A8A29E" stroke-width="1.5" data-page-node-id="DVJ7ifKguSPyeOV37QDIi9"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="lL9f74cnHmxpdxNw2l4HbQ">▲ 出处：《执行模型 · 名称的绑定》——「名称用于指代对象」，名字本身不装数据</p>
+</section>
+
+<!-- ============ 03 运行全程 ============ -->
+<section data-page-node-id="Dv6N8QezHWAm2wMDet2bdQ">
+  <div class="secnum" data-page-node-id="Srrtn5GaTsHFsTTZeWQXrd">03</div>
+  <h2 data-page-node-id="msItBJGjbxGxHC5RXmKpBN">运行全程 —— 四步，以及报错怎么读</h2>
+  <p class="lead" data-page-node-id="3pooAWABN6ZEw70FyBPBc3">一次运行只有四步：<b data-page-node-id="XJgIHoQOmp3jXSWRADYfiP">读 → 解析 → 执行 → 打印</b>。报错发生在中间两步，而读懂它只需要看<b data-page-node-id="3rjDBiSBiob9eHrTb5A4Zs">最后一行</b>。</p>
+
+  <div class="card" data-page-node-id="BgILnaHsIEhHix9J5I0Aq0">
+    <svg viewBox="0 0 680 390" xmlns="http://www.w3.org/2000/svg" role="img" data-page-node-id="opfvwDnVltdTYVr66MfukM">
+      <title>一次运行的四步与 Traceback 解剖</title>
+      <desc data-page-node-id="t5XOPdFmcPUX8ouID7bGD7">四步为按下运行、解析、执行、打印；下方是一份 Traceback，标注了最上面是调用路径、最后一行是错误类型与原因、箭头指向出错位置。</desc>
+      <rect x="20" y="24" width="140" height="64" rx="8" fill="#F1EDE7" data-page-node-id="QfFxHhkZCd0ExxX2cD3rtx"/>
+      <text x="90" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle" data-page-node-id="G04xfvVzbfAaKUBr2lkPLw">① 按下运行</text>
+      <text x="90" y="70" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="gZpZCyh5lAqsZIbUfL8C5q">代码文本发给内核</text>
+      <line x1="163" y1="56" x2="177" y2="56" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#a3)" data-page-node-id="W54XDLmrQZDxi6kXPnTvz8"/>
+      <rect x="180" y="24" width="140" height="64" rx="8" fill="#F1EDE7" data-page-node-id="FTmvnkwvJLngoWHjRpwwML"/>
+      <text x="250" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle" data-page-node-id="77dA4jJL8bbMcJJwuGVptI">② 解析</text>
+      <text x="250" y="70" class="svgtext" font-size="11.5" fill="#B4433A" text-anchor="middle" data-page-node-id="SwKbUDZwZaBrpBHeTXygsc">SyntaxError 在这里</text>
+      <line x1="323" y1="56" x2="337" y2="56" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#a3)" data-page-node-id="bEz76VQK4gBRE7FreqxJ4V"/>
+      <rect x="340" y="24" width="140" height="64" rx="8" fill="#F1EDE7" data-page-node-id="enmg4yKhkYKEVu23EBL5Da"/>
+      <text x="410" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle" data-page-node-id="GreNGEv5iWz1GSDYlEovNi">③ 执行</text>
+      <text x="410" y="70" class="svgtext" font-size="11.5" fill="#B4433A" text-anchor="middle" data-page-node-id="UB4Oju64StXHyTGwcz7G1j">NameError / TypeError</text>
+      <line x1="483" y1="56" x2="497" y2="56" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#a3)" data-page-node-id="s3tphM3s9gMPDLBhZIGGcV"/>
+      <rect x="500" y="24" width="140" height="64" rx="8" fill="#F7EBE4" data-page-node-id="v3WvShG4hUa3Ka1uSgIgEG"/>
+      <text x="570" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#C4633F" text-anchor="middle" data-page-node-id="JEO5nCpNUn9wksw2uhevVk">④ 打印</text>
+      <text x="570" y="70" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="Vt53ySA6J2ZMGriiW3E3Ub">输出，或报错</text>
+      <text x="20" y="118" class="svgtext" font-size="12.5" fill="#A8A29E" data-page-node-id="Uh7epXVWNXlUZZijM5MTWy">② 阶段的错误，代码一行都不会执行——它是「语法都不对」，不是「逻辑跑错」。</text>
+
+      <rect x="20" y="146" width="400" height="200" rx="10" fill="#FBF7F4" stroke="#E8E3DC" stroke-width="1" data-page-node-id="LcefKVTeVazX1mC1wCNofH"/>
+      <text x="36" y="176" class="svgmono" font-size="12.5" fill="#A8A29E" data-page-node-id="bijAoRzmetLliJJ87D1CHL">Traceback (most recent call last):</text>
+      <text x="36" y="200" class="svgmono" font-size="12.5" fill="#78716C" data-page-node-id="CXaVCXcQX42wWm9o6Goy0H">  File "demo.ipynb", line 3</text>
+      <text x="36" y="224" class="svgmono" font-size="12.5" fill="#292524" data-page-node-id="nvbWXeE4xCNT775F9aSQHR">    total = midterm + final</text>
+      <text x="36" y="246" class="svgmono" font-size="12.5" fill="#B4433A" data-page-node-id="Lv72xQqkymMLVW9Hsz0I05">            ^^^^^^^</text>
+      <text x="36" y="276" class="svgmono" font-size="12.5" fill="#292524" data-page-node-id="L1kmH8b5GeFEo9joJQjJJU">NameError: name 'midterm' is not defined</text>
+      <text x="36" y="308" class="svgtext" font-size="12" fill="#C4633F" data-page-node-id="UVazLKMJLBM0Q5weBPfKTG">↑ 先看这一行（错误类型 + 原因）</text>
+
+      <rect x="440" y="146" width="220" height="48" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1" data-page-node-id="hfsrRCjgUqiTgdkoru9avT"/>
+      <text x="454" y="168" class="svgtext" font-size="12" font-weight="600" fill="#292524" data-page-node-id="LQEQVPWX8MvZEp2H80Lllh">① 最上面：谁调用了谁</text>
+      <text x="454" y="184" class="svgtext" font-size="11.5" fill="#78716C" data-page-node-id="m0EC5FN8xngUJHpONupb55">一层层往下读</text>
+      <rect x="440" y="212" width="220" height="60" rx="8" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1" data-page-node-id="yN0ljRSCV3Q4d2CXLDvYZi"/>
+      <text x="454" y="234" class="svgtext" font-size="12" font-weight="600" fill="#C4633F" data-page-node-id="LMzUjFCXCYphxu75HHepV7">② 最后一行：错误类型 + 原因</text>
+      <text x="454" y="252" class="svgtext" font-size="11.5" fill="#C4633F" data-page-node-id="2yHMIxUOebOs0gMWjeE9By">整份报错里最有用的一行</text>
+      <rect x="440" y="290" width="220" height="56" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1" data-page-node-id="VzNodKoTvZLqZDoVflIFwY"/>
+      <text x="454" y="312" class="svgtext" font-size="12" font-weight="600" fill="#292524" data-page-node-id="8GzGgHfcRvToGpHp9iaujl">③ ^^^ 标出出错的位置</text>
+      <text x="454" y="330" class="svgtext" font-size="11.5" fill="#78716C" data-page-node-id="CYUTj1URagi25lCdhDPDr4">解析错误时不一定是要改的地方</text>
+      <defs data-page-node-id="9bBXZJJkRE78c18TXhnGDO">
+        <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="crIhtBqTEvGZyvq5yb8Cax">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#A8A29E" stroke-width="1.5" data-page-node-id="k7uyDi4Fj3i2G6aK8URZO5"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="GVgL4KdPpCHkhRn4fTB6wX">▲ 官方教程原话：「错误信息的最后一行说明程序遇到了什么类型的错误」</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section data-page-node-id="NsbTEeCAhYHD2f1j7lUpol">
+  <div class="secnum" data-page-node-id="JCus5a6xd7ph1IAG0fNfev">04</div>
+  <h2 data-page-node-id="Og5rHHbZ6es3pyFBwIGhGm">五条铁律</h2>
+  <div class="rules" data-page-node-id="uWXpIhVnpoGzL8HCXCgS0Q">
+    <div class="rule" data-page-node-id="0AwsAmSd7icMyTNFikSCjB"><span class="rn" data-page-node-id="LLsVXYbuOcaY6E21asaFru">1</span><div data-page-node-id="LEZ5hfj1hFW8lAHCq6VJre">
+      <div class="rt" data-page-node-id="xIpPOLyFcCbGQyYe1XZoAY">报错先看<b data-page-node-id="ZMhTRydFDzPWjlg4YhzBAh">最后一行</b></div>
+      <div class="rd" data-page-node-id="cEGsxfVluAdZrrNrglK8cB">那一行才是错误类型与原因；再往上，才去找它对应你写的哪一行。</div></div></div>
+    <div class="rule" data-page-node-id="tELeiVSVtZgZvey7yyYnxq"><span class="rn" data-page-node-id="HBdkQDga258NSGGsUVVpwO">2</span><div data-page-node-id="9Gayzo7ezAQa75qE7GSGCG">
+      <div class="rt" data-page-node-id="uHEBHY1naaY9iS5YsPyr2L">解析错误的箭头<b data-page-node-id="GTCPRwn3Xd0w2OKvrfrFWP">不一定指在要改的地方</b></div>
+      <div class="rd" data-page-node-id="Xbb2JY3tOyNKyk885uZgTl">官方教程明说：箭头的含义是「检测到」错误的位置，缺的是它前面的东西。</div></div></div>
+    <div class="rule" data-page-node-id="8wigVnlvg6Y0N4BW6KITlD"><span class="rn" data-page-node-id="L4oFP70Ij5b1r3n583BkCM">3</span><div data-page-node-id="F7L3MiqFknPljrGCQLyFpT">
+      <div class="rt" data-page-node-id="8VIOmw2wshUAl7k0Qx5K5s">只认 ASCII 引号与括号</div>
+      <div class="rd" data-page-node-id="ejRgv44cVTT1Nd4r0D2G73">中文全角 <code data-page-node-id="34rCNtdATr22RZrjz6L97A">“ ” （ ）</code> 不是 Python 的符号，会在解析阶段直接失败。</div></div></div>
+    <div class="rule" data-page-node-id="Lfwrqw8sBV4Pj9RfaJNj6A"><span class="rn" data-page-node-id="47uxLa54hhufDuxvuMdkAW">4</span><div data-page-node-id="hNgaf6D49s78QEoKK51cGG">
+      <div class="rt" data-page-node-id="nLqoFvbojKDFu8btFgnffU">变量名：小写 + 下划线，见名知义</div>
+      <div class="rd" data-page-node-id="LBlzsYyD6WI0SWrzknu9aB">别用 <code data-page-node-id="0DwNCWc6EKsFYZM2fMqNmR">l</code>、<code data-page-node-id="dWlWl2EdXCSUQj8ZBWqoi3">O</code>、<code data-page-node-id="HxyALKeM9eRbD95JOgPRXA">I</code> 当单字名——它们和数字 1、0 难以分辨（PEP 8 明令）。</div></div></div>
+    <div class="rule" data-page-node-id="nYYbiYXjK0Fhn8HRzwxe0t"><span class="rn" data-page-node-id="IWIlvzE2KwsPIwfHXBEwd7">5</span><div data-page-node-id="CPGTE6zGfkQTIncaAfIMWl">
+      <div class="rt" data-page-node-id="BXHnWroulLxS1yAWHSJFIg">内核有记忆，<b data-page-node-id="nAnhO3uzxoc2t4rcN3CLL6">文件里的顺序才是真相</b></div>
+      <div class="rd" data-page-node-id="YI69Nf80YfuEuwCkP04aUm">跳过某个单元格也能跑通，是内核还留着变量。交付前跑一次「重启内核 + 全部运行」。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section data-page-node-id="zkix6ZDZQ9iDlhSamBAYEj">
+  <div class="secnum" data-page-node-id="l8EpwcQG6QtrYoA0xkC5MN">05</div>
+  <h2 data-page-node-id="XVqxUqHc4HwB42j8kGDb5M">原始出处 · 点击验证</h2>
+  <div class="src" data-page-node-id="dI6QaDZrT8IvConQjYEvow">
+    <a href="https://docs.python.org/zh-cn/3/tutorial/index.html" target="_blank" rel="noopener" data-page-node-id="tdFzdDyjVE7eNiFyEZ3FWP">
+      <div class="st" data-page-node-id="b9CjVPlLjRbubcrbBFxFoQ">Python 官方教程（简体中文）</div>
+      <div class="sd" data-page-node-id="mbMTIcwgZQUBE253jnd3at">第一个程序、注释、变量赋值、列表——第一课全部内容的官方母本</div>
+      <div class="sl" data-page-node-id="9whFHiH8QCKVlikb3VI3QI">docs.python.org/zh-cn/3/tutorial/index.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/tutorial/errors.html" target="_blank" rel="noopener" data-page-node-id="5464oUgnP4PIWDMgS6O7GK">
+      <div class="st" data-page-node-id="ngw13cGGS0Fdl2gDY7eCkG">8. 错误和异常</div>
+      <div class="sd" data-page-node-id="eEsfXHFETGCTggd9Jcz2bC">「错误信息的最后一行说明程序遇到了什么类型的错误」；SyntaxError 箭头语义的原文出处</div>
+      <div class="sl" data-page-node-id="cdHgC11T9rsMl0A0mUsEzL">docs.python.org/zh-cn/3/tutorial/errors.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/reference/executionmodel.html" target="_blank" rel="noopener" data-page-node-id="Z3zCQFvYu4WoEj5wqW57gj">
+      <div class="st" data-page-node-id="kHbTzw2UFQK5KAjpowco85">4. 执行模型 · 名称的绑定</div>
+      <div class="sd" data-page-node-id="oeHtJs2TwQuViUzNzoon73">「名称用于指代对象」；NameError 的判定规则——第 02 节那张图的依据</div>
+      <div class="sl" data-page-node-id="ReqmuJ0dwjJhdt5yvfzht6">docs.python.org/zh-cn/3/reference/executionmodel.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener" data-page-node-id="LFP9uSfyk1ZjmUVpVgA8Bm">
+      <div class="st" data-page-node-id="qAT2nIabZECk3k1jbhrLSH">内置类型</div>
+      <div class="sd" data-page-node-id="SHnqhzDlsBZ1DoJRwSHTEz">int / float / str / bool 的官方定义与各自支持的操作</div>
+      <div class="sl" data-page-node-id="mx1EcJS2ZmuduVdocsSsK8">docs.python.org/zh-cn/3/library/stdtypes.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#type" target="_blank" rel="noopener" data-page-node-id="dsTXFY7a1kh6HmKjTbgQIA">
+      <div class="st" data-page-node-id="kp150oRW3L4rX1JCw6hVCb">内置函数 · type()</div>
+      <div class="sd" data-page-node-id="kbncVgu3beUz0yHYLFtbS0">查看一个对象是什么类型：type(78) → int</div>
+      <div class="sl" data-page-node-id="vb5V07ixgVCVAXsiCN9E9n">docs.python.org/zh-cn/3/library/functions.html#type</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/reference/lexical_analysis.html" target="_blank" rel="noopener" data-page-node-id="JQsWozyUQtj7gkgeDCzgHq">
+      <div class="st" data-page-node-id="gQveXBdGuu84Hw3gJmGnnw">2. 词法分析</div>
+      <div class="sd" data-page-node-id="yemMy0Cdt1tEF0IfjkuPk4">引号、括号、缩进的语法规定——全角符号为什么不可能通过解析</div>
+      <div class="sl" data-page-node-id="VAkq9ihTqFBencxQam3e6h">docs.python.org/zh-cn/3/reference/lexical_analysis.html</div>
+    </a>
+    <a href="https://peps.python.org/pep-0008/#function-and-variable-names" target="_blank" rel="noopener" data-page-node-id="7CFfX4WyasvdQXtPYooe7H">
+      <div class="st" data-page-node-id="bVFAQwBuYkaYMNP9vO9865">PEP 8 · 函数与变量命名</div>
+      <div class="sd" data-page-node-id="ygwkSuRE7R6CcUxA41Atoz">小写 + 下划线；禁用 l / O / I 作单字符变量名</div>
+      <div class="sl" data-page-node-id="4YnMIpXfg01nmfAReRC8Zg">peps.python.org/pep-0008/#function-and-variable-names</div>
+    </a>
+    <a href="https://docs.jupyter.org/en/latest/what_is_jupyter.html" target="_blank" rel="noopener" data-page-node-id="GgnOFvYt4IIb5eFJFLlmDQ">
+      <div class="st" data-page-node-id="rQ1ht7HCZz4oyDLVHlG84n">What is Jupyter?（REPL 与内核）</div>
+      <div class="sd" data-page-node-id="H1sobJXBfXlB7hHhWB24rP">内核为何能跨单元格保住变量；关掉内核就丢——第 01、04 节的事实来源</div>
+      <div class="sl" data-page-node-id="FmkVSsS5ri5G7ihKThPOlQ">docs.jupyter.org/en/latest/what_is_jupyter.html</div>
+    </a>
+    <a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks" target="_blank" rel="noopener" data-page-node-id="5KBASqwQZZTQNy3YWoGGEj">
+      <div class="st" data-page-node-id="jgFQS8X0RQKx2A3PrElbg0">Jupyter Notebooks in VS Code</div>
+      <div class="sd" data-page-node-id="lHitvijwzoPJJvGlTEVXEs">单元格运行快捷键、内核选择器、重启/中断内核的操作位置</div>
+      <div class="sl" data-page-node-id="pZ3jE5PkEZ6GGUf6j4Lf7e">code.visualstudio.com/docs/datascience/jupyter-notebooks</div>
+    </a>
+    <a href="https://www.python.org/downloads/" target="_blank" rel="noopener" data-page-node-id="e9hfT6qaAU4N9BrKUhPLUL">
+      <div class="st" data-page-node-id="SbFaskHKCtQPOdUqiSG72A">Python Downloads</div>
+      <div class="sd" data-page-node-id="Vd2TrSKPybeCMhVfnGoN8M">当前稳定版 3.14.7（2026-08-05 发布）；安装时记得勾选 Add to PATH</div>
+      <div class="sl" data-page-node-id="HLEqtmjB5JwSJk7LYU77wV">python.org/downloads/</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section data-page-node-id="gfqyuMemYFbDodW5p7VB83">
+  <div class="secnum" data-page-node-id="lPKJfAxvBOTtPiv0YMNvTq">06</div>
+  <h2 data-page-node-id="B3O0UpzAAzcfQVVlPDIPjk">自测 · 难度递进</h2>
+  <p class="lead" data-page-node-id="YBAb9LX54mFfRyDqaPz6y1">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz" data-page-node-id="S6hmXRItNICMPlnZF6iypC"></div>
+</section>
+
+<footer data-page-node-id="4YOAkGp2LEZWoRgCzYiRXS">
+  本手册依据上述原始出处整理，生成于 2026-09-16 · 对应《Python 基础语法 + pandas 四次课方案》第 1 次课上半场
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"内核（kernel）里实际堆着的是什么？",
+   o:["你保存的 .ipynb 文件","这次会话里已经创建的对象和变量","上一次运行留下的输出文本","编辑器的撤销与历史记录"],a:1,
+   e:"内核是一个常驻内存的 REPL，<b>变量和对象留在内存里</b>，所以下一个单元格还能用（见第 01 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"把 print 写成 print（“你好”），用了中文引号，会发生什么？",
+   o:["SyntaxError：解析阶段就过不去","照常打印，只是字体不同","NameError：找不到 print","TypeError：引号类型不对"],a:0,
+   e:"中文引号不是 Python 的引号字符，<b>在第 ② 步解析就被拦下</b>，一行代码都不会执行（见第 03、04 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"一份报错信息里，哪一行告诉你「错在哪一类」？",
+   o:["Traceback 的第一行","带 ^^^ 箭头的那一行","最后一行","写着文件名和行号的那一行"],a:2,
+   e:"官方教程原话：<b>错误信息的最后一行说明程序遇到了什么类型的错误</b>，其余部分说明细节与调用路径（见第 03 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"a = [1,2,3] 之后执行 b = a，改 b 会连带改 a。为什么？",
+   o:["Python 会自动同步同名变量","b 是 a 的只读视图","列表赋值默认深拷贝，顺带同步回 a","赋值是把名字绑定到同一个对象，两个名字指的是同一份数据"],a:3,
+   e:"「名称用于指代对象」：<b>b = a 只多贴了一个名字</b>，没有复制对象，所以不存在「第二个列表」（见第 02 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"你在第 1 个单元格定义了 x = 10，跳过第 2 个，直接运行第 3 个（用了 x），没报错。这说明什么？",
+   o:["内核记住了 x，但文件从头跑的干净环境未必能通过","单元格之间有自动依赖补全","第 2 个单元格没有作用","内核会自动修复缺失的变量"],a:0,
+   e:"内核有状态（第 04 节铁律 5）。<b>交付或求助前先「重启内核 + 全部运行」</b>，才是这份文件真实的表现。"},
+  {lv:3,lt:"挑战 · 应用",q:"最后一行是 NameError: name 'scores' is not defined。最该先检查什么？",
+   o:["内存是否不足","是不是少装了某个包","变量名是否拼错或大小写不符、以及定义它的单元格是否真的运行过","文件是不是 UTF-8 编码"],a:2,
+   e:"NameError 的含义是<b>这个名字在当前作用域里从未绑定过</b>：先查拼写与大小写，再查「那一行跑了吗」（见第 03、04 节）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——起步阶段该记住的都在了，可以直接进下半场。"
+        :score>=4?"不错——回到标错的章节，把第 02 的图和第 03 的 Traceback 再看一遍。"
+        :"建议从第 01 节重新过一遍，重点理解「名字指向对象」和「报错先看最后一行」。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

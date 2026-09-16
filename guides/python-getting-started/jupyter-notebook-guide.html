@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notebook 与内核 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+  .crumbs{font-size:13.5px;color:var(--ink3);margin-top:28px}
+  .crumbs a{color:var(--accent);text-decoration:none}
+  .crumbs .sep{margin:0 8px}
+  header{padding:56px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+  .pn{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;font-size:14px}
+  .pn a{color:var(--accent);text-decoration:none}
+  footer{margin-top:40px;padding-top:24px;font-size:13px;color:var(--ink3)}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs">
+  <a href="index.html">← Python 起步 · 系列路径</a>
+  <span class="sep">›</span><span>Notebook 与内核</span>
+</nav>
+
+<header>
+  <div class="eyebrow">学 习 手 册 · 溯 源 版</div>
+  <h1>Notebook 与内核</h1>
+  <p class="sub">.ipynb 是一份 JSON 文档，真正执行的是常驻内存的内核</p>
+  <div class="meta">
+    <span class="chip">格式是 JSON</span>
+    <span class="chip">内核 = 常驻内存的 REPL</span>
+    <span class="chip">执行顺序 ≠ 文件顺序</span>
+  </div>
+</header>
+
+<!-- 01 它是什么：结构图 -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么</h2>
+  <p class="lead"><b>.ipynb 是一份 JSON 文档</b>，顶层是 cells 数组与 metadata，每个 cell 自带类型、源码，code cell 还存着上一次输出。</p>
+  <div class="card">
+    <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="620" height="360" rx="14" fill="var(--card)" stroke="var(--accent-line)" stroke-width="1.5"/>
+      <text x="50" y="62" class="svgtext" font-size="14" font-weight="600" fill="var(--accent)">文档 .ipynb（JSON）—— 顶层：cells 数组 + metadata</text>
+
+      <rect x="50" y="84" width="580" height="60" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="66" y="108" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">code cell</text>
+      <text x="66" y="130" class="svgtext" font-size="12" fill="var(--ink2)">源码 → outputs（上一次输出，存在文档里）</text>
+
+      <rect x="50" y="158" width="580" height="60" rx="10" fill="var(--bg)" stroke="var(--border)"/>
+      <text x="66" y="182" class="svgtext" font-size="13" font-weight="600" fill="var(--ink)">markdown cell</text>
+      <text x="66" y="204" class="svgtext" font-size="12" fill="var(--ink2)">只存文字说明，不执行，无 outputs</text>
+
+      <rect x="50" y="232" width="580" height="60" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="66" y="256" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">code cell</text>
+      <text x="66" y="278" class="svgtext" font-size="12" fill="var(--ink2)">源码 → outputs（上一次输出，存在文档里）</text>
+
+      <rect x="50" y="306" width="580" height="60" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="66" y="330" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">code cell</text>
+      <text x="66" y="352" class="svgtext" font-size="12" fill="var(--ink2)">源码 → outputs（上一次输出，存在文档里）</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 文档是容器，cell 是数组里的元素，输出也写进文档</p>
+</section>
+
+<!-- 02 核心设计：内核机制图 -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心设计 —— 内核机制</h2>
+  <p class="lead"><b>内核是一个常驻内存的 REPL 进程</b>，变量与对象活在它的内存里，关掉内核变量就没了，但文档里的输出还在。</p>
+  <div class="card">
+    <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="p2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+
+      <rect x="40" y="110" width="170" height="130" rx="12" fill="var(--card)" stroke="var(--border)" stroke-width="1.5"/>
+      <text x="125" y="150" text-anchor="middle" class="svgtext" font-size="14" font-weight="600" fill="var(--accent)">文档 .ipynb</text>
+      <text x="125" y="176" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">保存源码</text>
+      <text x="125" y="196" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">与上一次输出</text>
+
+      <rect x="470" y="70" width="170" height="200" rx="12" fill="var(--accent-soft)" stroke="var(--accent-line)" stroke-width="1.5"/>
+      <text x="555" y="104" text-anchor="middle" class="svgtext" font-size="15" font-weight="600" fill="var(--accent)">内核</text>
+      <text x="555" y="128" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">（常驻内存 REPL）</text>
+      <text x="555" y="156" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink)">读 → 求值 →</text>
+      <text x="555" y="176" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink)">打印 → 循环</text>
+      <text x="555" y="206" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">内存对象表：</text>
+      <text x="555" y="226" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">变量 / 对象</text>
+
+      <line x1="212" y1="150" x2="466" y2="142" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#p2b)"/>
+      <text x="339" y="132" text-anchor="middle" class="svgtext" font-size="12" fill="var(--accent)">发代码</text>
+
+      <line x1="466" y1="190" x2="212" y2="200" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#p2b)"/>
+      <text x="339" y="222" text-anchor="middle" class="svgtext" font-size="12" fill="var(--accent)">回输出</text>
+
+      <text x="340" y="310" text-anchor="middle" class="svgtext" font-size="13" fill="var(--ink2)">关掉内核，变量没了，但文档里的输出还在</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 文档与内核双向通信，内存与文档各存一份状态</p>
+</section>
+
+<!-- 03 运行全程：四步时序 -->
+<section>
+  <div class="secnum">03</div>
+  <h2>运行全程 —— 四步执行</h2>
+  <p class="lead"><b>编辑 → 发送 → 执行 → 回写</b>：可以乱序执行，但文档只记住结果，不记住顺序的依据。</p>
+  <div class="card">
+    <svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="p2c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+
+      <rect x="20" y="70" width="140" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="90" y="100" text-anchor="middle" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">① 编辑 cell</text>
+      <text x="90" y="124" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">写好源码</text>
+
+      <rect x="190" y="70" width="140" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="260" y="100" text-anchor="middle" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">② 发代码给内核</text>
+      <text x="260" y="124" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">送往 REPL</text>
+
+      <rect x="360" y="70" width="140" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="430" y="100" text-anchor="middle" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">③ 内核执行</text>
+      <text x="430" y="124" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">返回输出</text>
+
+      <rect x="530" y="70" width="140" height="80" rx="10" fill="var(--accent-soft)" stroke="var(--accent-line)"/>
+      <text x="600" y="100" text-anchor="middle" class="svgtext" font-size="13" font-weight="600" fill="var(--accent)">④ 回写文档</text>
+      <text x="600" y="124" text-anchor="middle" class="svgtext" font-size="12" fill="var(--ink2)">输出到 cell 下方</text>
+
+      <line x1="160" y1="110" x2="188" y2="110" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#p2c)"/>
+      <line x1="330" y1="110" x2="358" y2="110" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#p2c)"/>
+      <line x1="500" y1="110" x2="528" y2="110" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#p2c)"/>
+
+      <text x="340" y="198" text-anchor="middle" class="svgtext" font-size="13" fill="var(--ink2)">可乱序执行；文档只记住结果，不记住顺序的依据</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 四步闭环，输出回到 cell 下方，但顺序不由文档保证</p>
+</section>
+
+<!-- 04 铁律：五条 -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt"><b>输出是历史记录，不是可复现的证明</b></div>
+      <div class="rd">文档里的输出只是某次运行的快照，不代表从头跑一定成立。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt"><b>执行顺序 ≠ 文件顺序</b></div>
+      <div class="rd">跳过某格也能跑通，是因为内核还留着之前的变量。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt"><b>交付或求助前必须「重启内核 + 全部运行」</b></div>
+      <div class="rd">这样才能排除乱序执行留下的假结果，验证从头跑也成立。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt"><b>探索用 .ipynb，固化用 .py</b></div>
+      <div class="rd">要被反复运行、被别的文件引用的脚本，应写成纯 Python 文件。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt"><b>内核死了变量没、输出还在</b></div>
+      <div class="rd">变量活在内存，重启即清空；输出写在文档，不随内核消失。</div></div></div>
+  </div>
+</section>
+
+<!-- 05 溯源：三个出处 -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://nbformat.readthedocs.io/en/latest/format_description.html" target="_blank" rel="noopener">
+      <div class="st">nbformat · .ipynb 格式说明</div>
+      <div class="sd">.ipynb 是 JSON 文档，cells 与 metadata 的字段结构</div>
+      <div class="sl">nbformat.readthedocs.io/en/latest/format_description.html</div>
+    </a>
+    <a href="https://docs.jupyter.org/en/latest/what_is_jupyter.html" target="_blank" rel="noopener">
+      <div class="st">Jupyter · 它是什么</div>
+      <div class="sd">内核是常驻内存的 REPL；跨单元格保住变量，关掉内核即丢失</div>
+      <div class="sl">docs.jupyter.org/en/latest/what_is_jupyter.html</div>
+    </a>
+    <a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks" target="_blank" rel="noopener">
+      <div class="st">VS Code · Jupyter Notebook 文档</div>
+      <div class="sd">单元格运行快捷键、内核选择器与重启内核的位置</div>
+      <div class="sl">code.visualstudio.com/docs/datascience/jupyter-notebooks</div>
+    </a>
+  </div>
+</section>
+
+<!-- 06 自测：6 题三级递进 -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<nav class="pn">
+  <a href="python-environment-guide.html">← 上一页 · Python 运行环境</a>
+  <a href="python-traceback-guide.html">下一页 · 报错与 Traceback →</a>
+</nav>
+
+<footer>
+  本手册依据上述原始出处整理，生成于 2026-09-16 · Python 起步 系列第 2 篇
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"用文本编辑器打开 .ipynb，它本质上是什么格式？",
+   o:["二进制压缩包","JSON 文档","纯 Python 脚本","SQLite 数据库"],a:1,
+   e:"用文本编辑器打开 .ipynb，看到的是 JSON 文本。回 01 节看结构图。"},
+  {lv:1,lt:"基础 · 识别",q:"重启内核之后，之前跑出来的输出还在吗？",
+   o:["都不在了","只有变量还在","输出和变量都没了","输出还在，但变量没了"],a:3,
+   e:"输出写在文档里，重启内核只清空内存中的变量。回 02 节看内核机制。"},
+  {lv:2,lt:"进阶 · 理解",q:"为什么关掉内核，之前定义的变量就消失了？",
+   o:["变量活在常驻内存的 REPL 里，进程结束就没了","变量写在文档里被清空了","内核把变量备份到磁盘了","代码 cell 没执行"],a:0,
+   e:"变量活在常驻内存的 REPL 进程中，进程结束内存释放。回 02 节看内核机制。"},
+  {lv:2,lt:"进阶 · 理解",q:"code cell 与 markdown cell 的分工是什么？",
+   o:["两者都送内核执行","markdown 执行、code 只显示","两者都不执行","code 送内核执行，markdown 只是说明文字"],a:2,
+   e:"code 送内核执行并回写输出，markdown 仅作说明不执行。回 01 节看 cell 类型。"},
+  {lv:3,lt:"挑战 · 应用",q:"交付一份 notebook 之前，为什么要「重启内核 + 全部运行」？",
+   o:["让文档体积变小","排除乱序执行造成的假结果，验证从头跑也成立","为了清空所有输出","只是为了练习快捷键"],a:1,
+   e:"乱序执行会留下假结果，重启加全跑验证从头成立。回 04 节铁律三。"},
+  {lv:3,lt:"挑战 · 应用",q:"什么情况下应该用 .py 而不是 .ipynb？",
+   o:["需要被反复运行、被别的文件引用的固化脚本","只要写说明文字","只想画一张结构图","临时记个公式"],a:0,
+   e:"固化、可被引用的脚本用 .py；探索用 .ipynb。回 04 节铁律四。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——这一页可以过了。"
+        :score>=4?"不错——回到标错的章节再看一遍。"
+        :"建议从第 01 节重新过一遍。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

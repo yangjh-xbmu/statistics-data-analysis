@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>列表套字典 · 一张表 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+  .meta .chip code{font-family:var(--mono)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .lead code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+  .caption code{font-family:var(--mono)}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .opts .opt code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .explain code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:4px}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  .crumbs{font-size:13.5px;color:var(--ink3);margin-top:28px}
+  .crumbs a{color:var(--accent);text-decoration:none}
+  .crumbs .sep{margin:0 8px}
+  .pn{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;font-size:14px}
+  .pn a{color:var(--accent);text-decoration:none}
+
+  footer{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">运 算 符 与 容 器 · 04</div>
+  <h1>列表套字典 = 一张表</h1>
+  <p class="sub">列表的每一项是一行，字典的每个键是一列 —— 行列齐了，就是一张数据表。</p>
+  <div class="meta">
+    <span class="chip">一行为一个字典</span>
+    <span class="chip">一列为一个键</span>
+    <span class="chip">第 3 次课 pandas 的前身</span>
+  </div>
+</header>
+
+<nav class="crumbs">
+  <a href="index.html">← 运算符与容器 · 系列路径</a>
+  <span class="sep">›</span><span>列表套字典 = 一张表</span>
+</nav>
+
+<!-- ============ 01 它是什么 ============ -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么 —— 同一份数据的两种写法</h2>
+  <p class="lead">左边是 Python 里的写法，右边是你眼睛看到的形态。<b>它们不是「两种数据」，是同一份数据的两种呈现。</b></p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>列表套字典与表格形态的对应</title>
+      <desc>左边是列表套字典的代码写法，右边是同一份数据的表格形态，并标注列表项对应行、字典键对应列。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">这里没有魔法，只有一行行地走</text>
+
+      <rect x="20" y="42" width="340" height="236" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="66" class="svgtext" font-size="12" fill="#78716C">Python 里：列表套字典</text>
+      <text x="36" y="94" class="svgmono" font-size="11.5" fill="#292524">rows = [</text>
+      <text x="36" y="113" class="svgmono" font-size="11.5" fill="#292524">  {"name": "王思远", "midterm": 78,</text>
+      <text x="36" y="132" class="svgmono" font-size="11.5" fill="#78716C">   "final": 82},</text>
+      <text x="36" y="151" class="svgmono" font-size="11.5" fill="#292524">  {"name": "李佳琪", "midterm": 85,</text>
+      <text x="36" y="170" class="svgmono" font-size="11.5" fill="#78716C">   "final": 88},</text>
+      <text x="36" y="189" class="svgmono" font-size="11.5" fill="#292524">  {"name": "张一鸣", "midterm": 62,</text>
+      <text x="36" y="208" class="svgmono" font-size="11.5" fill="#78716C">   "final": 71},</text>
+      <text x="36" y="227" class="svgmono" font-size="11.5" fill="#292524">]</text>
+      <text x="36" y="256" class="svgtext" font-size="11.5" fill="#C4633F">换行与缩进只是排版，逗号才是分隔</text>
+
+      <rect x="380" y="42" width="280" height="236" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="396" y="66" class="svgtext" font-size="12" fill="#78716C">看起来：一张表</text>
+      <text x="396" y="96" class="svgmono" font-size="10.5" fill="#A8A29E">name</text>
+      <text x="492" y="96" class="svgmono" font-size="10.5" fill="#A8A29E">midterm</text>
+      <text x="576" y="96" class="svgmono" font-size="10.5" fill="#A8A29E">final</text>
+      <line x1="396" y1="106" x2="644" y2="106" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="396" y="132" class="svgtext" font-size="11.5" fill="#292524">王思远</text>
+      <text x="492" y="132" class="svgmono" font-size="11.5" fill="#292524">78</text>
+      <text x="576" y="132" class="svgmono" font-size="11.5" fill="#C4633F">82</text>
+      <text x="396" y="160" class="svgtext" font-size="11.5" fill="#292524">李佳琪</text>
+      <text x="492" y="160" class="svgmono" font-size="11.5" fill="#292524">85</text>
+      <text x="576" y="160" class="svgmono" font-size="11.5" fill="#C4633F">88</text>
+      <text x="396" y="188" class="svgtext" font-size="11.5" fill="#292524">张一鸣</text>
+      <text x="492" y="188" class="svgmono" font-size="11.5" fill="#292524">62</text>
+      <text x="576" y="188" class="svgmono" font-size="11.5" fill="#C4633F">71</text>
+      <line x1="396" y1="204" x2="644" y2="204" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="396" y="228" class="svgtext" font-size="11.5" fill="#78716C">列表的每一项 = 一行（个案）</text>
+      <text x="396" y="248" class="svgtext" font-size="11.5" fill="#78716C">字典的每个键 = 一列（变量）</text>
+      <text x="396" y="268" class="svgtext" font-size="11.5" fill="#C4633F">行列齐了，就是一张数据表</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方教程把这种写法叫「列表可以嵌套」：列表里装字典，正是「一张表」在 Python 里最朴素的表达</p>
+</section>
+
+<!-- ============ 02 核心设计 ============ -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心设计 —— 取一列，得走过去</h2>
+  <p class="lead">最反直觉的一点：<b><code>rows["final"]</code> 一定报错。</b>列表只认位置不认名字，想拿一列，唯一办法是每一行都走一遍。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>列表按下标取列会失败，逐行走过去才对</title>
+      <desc>上方是列表套字典上直接用列名取值导致的 TypeError，下方是逐行取出每一行的 final 拼成一列的三步流程。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">为什么「取一列」要绕这一圈</text>
+
+      <rect x="20" y="44" width="640" height="92" rx="12" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="40" y="74" class="svgmono" font-size="13" fill="#292524">rows["final"]</text>
+      <text x="182" y="74" class="svgmono" font-size="12" fill="#3D7A50">→ 想当然的写法</text>
+      <text x="40" y="102" class="svgmono" font-size="11.5" fill="#B4433A">TypeError: list indices must be integers or slices, not str</text>
+      <text x="40" y="126" class="svgtext" font-size="12" fill="#78716C">列表的下标只能是整数 —— 它压根不认识 final 这个名字。</text>
+
+      <line x1="20" y1="156" x2="660" y2="156" stroke="#E8E3DC" stroke-width="1"/>
+
+      <rect x="20" y="178" width="180" height="76" rx="10" fill="#F1EDE7"/>
+      <text x="34" y="204" class="svgmono" font-size="11.5" fill="#292524">for r in rows</text>
+      <text x="34" y="228" class="svgtext" font-size="11.5" fill="#78716C">取出一行（一个字典）</text>
+      <line x1="203" y1="216" x2="213" y2="216" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#tb1)"/>
+
+      <rect x="216" y="178" width="180" height="76" rx="10" fill="#F1EDE7"/>
+      <text x="230" y="204" class="svgmono" font-size="11.5" fill="#292524">r["final"]</text>
+      <text x="230" y="228" class="svgtext" font-size="11.5" fill="#78716C">从这一行按名字取格子</text>
+      <line x1="399" y1="216" x2="409" y2="216" stroke="#A8A29E" stroke-width="1.5" marker-end="url(#tb1)"/>
+
+      <rect x="412" y="178" width="248" height="76" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="426" y="204" class="svgmono" font-size="12" fill="#C4633F">[82, 88, 71]</text>
+      <text x="426" y="228" class="svgtext" font-size="11.5" fill="#C4633F">拼成一列，才能求和求均值</text>
+
+      <text x="20" y="284" class="svgtext" font-size="12.5" fill="#A8A29E">「走一遍」这件事下次课用 for 讲透；现在可以先用 sum(r["final"] for r in rows) 预览它的简写形态。</text>
+      <defs>
+        <marker id="tb1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#A8A29E" stroke-width="1.5"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+  <p class="caption">▲ 报错原文是 <code>list indices must be integers or slices, not str</code> —— 记住它，下次一看到就想起「列表不能按名字取」</p>
+</section>
+
+<!-- ============ 03 运行全程 ============ -->
+<section>
+  <div class="secnum">03</div>
+  <h2>运行全程 —— 从三行记录到一句话结论</h2>
+  <p class="lead">四步：<b>取出每一行 → 从行里按名字取值 → 累加与计数 → 格式化输出。</b>第 3 次课的 pandas 会把中间两步一次做完。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 196" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>列表套字典上的统计四步</title>
+      <desc>四个方块依次为逐行取出、按名字取值、累加计数和格式化输出，下方给出真实数据跑出的结果。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">四个动作，就是后面 pandas 要替你做的事</text>
+
+      <rect x="20" y="44" width="151" height="80" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="70" class="svgtext" font-size="11.5" fill="#78716C">① 取出每一行</text>
+      <text x="36" y="96" class="svgmono" font-size="11" fill="#292524">for r in rows</text>
+      <text x="36" y="118" class="svgtext" font-size="11" fill="#A8A29E">一行一个字典</text>
+
+      <rect x="183" y="44" width="151" height="80" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="70" class="svgtext" font-size="11.5" fill="#78716C">② 从行里取值</text>
+      <text x="199" y="96" class="svgmono" font-size="11" fill="#292524">r["final"]</text>
+      <text x="199" y="118" class="svgtext" font-size="11" fill="#A8A29E">按名字取格子</text>
+
+      <rect x="346" y="44" width="151" height="80" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="362" y="70" class="svgtext" font-size="11.5" fill="#78716C">③ 累加与计数</text>
+      <text x="362" y="96" class="svgmono" font-size="11" fill="#292524">sum / len</text>
+      <text x="362" y="118" class="svgtext" font-size="11" fill="#A8A29E">两个内置函数</text>
+
+      <rect x="509" y="44" width="151" height="80" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="525" y="70" class="svgtext" font-size="11.5" fill="#C4633F">④ 输出一句话</text>
+      <text x="525" y="96" class="svgmono" font-size="11" fill="#C4633F">f"{avg:.2f}"</text>
+      <text x="525" y="118" class="svgtext" font-size="11" fill="#C4633F">只留两位小数</text>
+
+      <text x="20" y="152" class="svgtext" font-size="12.5" fill="#C4633F">同一套流程跑 datasets/scores.csv：30 条记录 → 期末均分 77.33 · 期中均分 75.43 · 及格率 93.3%</text>
+      <text x="20" y="178" class="svgtext" font-size="12.5" fill="#A8A29E">第 3 次课的一行 pd.read_csv 就会直接给你这张表 —— 这四步 pandas 在内部替你走完了。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 数值来源：<code>datasets/scores.csv</code>（30 条真实记录），用本机 Python 3.13.14 按上述流程算出</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt">一行为一个字典，一列为一个键</div>
+      <div class="rd">列表项 = 行（个案），字典键 = 列（变量）。这个对应关系认下来，后面所有表格操作都不用重学。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt">列表不能按名字取列 —— <code>rows["final"]</code> 一定报错</div>
+      <div class="rd">列表只认整数下标。取一列必须逐行走过去：先拿到每一行的字典，再按名字取格子。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt">每行要有同一套键，缺的用 <code>get()</code> 兜住</div>
+      <div class="rd">真实数据总有缺字段的行。直接 <code>r['final']</code> 会在第一个缺考的人身上中断；<code>r.get('final')</code> 给你 None，让你自己决定怎么处理。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt">行序就是表序</div>
+      <div class="rd">列表的顺序是数据的一部分。随手 <code>sort()</code> 会把「原始录入顺序」永久丢掉，要保留就先 <code>sorted()</code> 拿一份新的。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt">这就是 <code>DataFrame</code> 的前身</div>
+      <div class="rd">同一份「列表套字典」，pandas 用一行 <code>pd.read_csv</code> 得到，还额外带行列索引、按列取值、分组聚合 —— 但结构认知与这一页完全一致。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">
+      <div class="st">数据结构 · 列表嵌套与字典</div>
+      <div class="sd">「还可以嵌套列表（创建包含其他列表的列表）」—— 列表里装字典是同一机制的延伸；字典一节给出键唯一与 <code>get()</code> 的规则</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/datastructures.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#sum" target="_blank" rel="noopener">
+      <div class="st">内置函数 · sum</div>
+      <div class="sd">对可迭代对象的元素求和；配合 <code>len()</code> 就是算术平均数 <code>sum(x) / len(x)</code></div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html#sum</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/statistics.html#statistics.mean" target="_blank" rel="noopener">
+      <div class="st">statistics · mean</div>
+      <div class="sd">样本算术平均数的正式版本；第 4 次课还会碰到 numpy.mean 与 statistics.stdev 的 ddof 差异</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/statistics.html#statistics.mean</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#mapping-types-dict" target="_blank" rel="noopener">
+      <div class="st">内置类型 · 映射类型 dict</div>
+      <div class="sd"><code>get(key[, default])</code> 的行为定义 —— 第 04 节铁律 3「缺字段怎么兜」的官方依据</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/stdtypes.html#mapping-types-dict</div>
+    </a>
+    <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html" target="_blank" rel="noopener">
+      <div class="st">pandas · DataFrame（下一个战场）</div>
+      <div class="sd">带行列索引的二维表；本次手写的「列表套字典」就是它的前身，第 3 次课一行 <code>read_csv</code> 即可得到</div>
+      <div class="sl">pandas.pydata.org/docs/reference/api/pandas.DataFrame.html</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<nav class="pn">
+  <a href="python-dict-guide.html">← 上一页 · 字典</a>
+  <span></span>
+</nav>
+
+<footer>
+  本手册依据上述原始出处整理，其中数值结果均在本机 Python 3.13.14 实测 · 生成于 2026-09-16<br>
+  所属系列：运算符与容器（第 1 次课下半场）· <a href="index.html">返回概念地图</a> · 切分表见 <a href="_series/concepts.md">_series/concepts.md</a>
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"一张 30 人的成绩表用「列表套字典」表示，列表的每一项是什么？",
+   o:["一个班","一列成绩","一位同学（一条记录）","表头"],a:2,
+   e:"<b>列表的每一项 = 表的一行</b>，也就是一个个案；30 位同学就是 30 个字典（见第 01 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"同一个结构里，字典的每个键对应表的什么？",
+   o:["一行","一个单元格","一条备注","一列（一个变量）"],a:3,
+   e:"<b>字典的每个键 = 表的一列</b>：name 是姓名列、final 是期末列，键名就是列名（见第 01 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:'rows 是列表套字典，执行 rows["final"] 会怎样？',
+   o:["取出 final 这一列","报 KeyError","报 TypeError：列表下标必须是整数或切片","返回 None"],a:2,
+   e:"列表<b>只认位置不认名字</b>，报错原文是 <code>list indices must be integers or slices, not str</code>。要取一列，必须逐行走过去（见第 02、04 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"同一张表里，第 3 行少了 final 这个键。这件事最先会在哪里暴露出来？",
+   o:["创建列表时就会报错","对该行取 r['final'] 时引发 KeyError","len(rows) 会少 1","列表的顺序会自动重排"],a:1,
+   e:"缺字段<b>不会在建立结构时报错</b>，只在真正按名字取它的那一刻炸：<code>r['final']</code> 是 KeyError，用 <code>r.get('final')</code> 才能先拿到 None 再决定怎么办（见第 04 节铁律 3）。"},
+  {lv:3,lt:"挑战 · 应用",q:"下面哪一句能算出所有行的 final 之和（先不管缺考的人）？",
+   o:['sum(rows["final"])','rows.sum("final")','sum(rows, "final")','sum(r["final"] for r in rows)'],a:3,
+   e:'必须先<b>一行一行取出 r，再从 r 里按名字取值</b>；<code>rows["final"]</code> 连第一步都过不去。这一句里的「走一遍」下次课会用 for 讲透（见第 02、03 节）。'},
+  {lv:3,lt:"挑战 · 应用",q:'要给每位同学加一个「总评」列（= 期中×0.4 + 期末×0.6），该怎么做？',
+   o:['给列表末尾再加一项：[...] + [总评]','在列表之外新建一个字典，把总评存进去','逐行改每个字典：r["总评"] = r["midterm"]*0.4 + r["final"]*0.6','把列表换成元组，元组里再放字典'],a:2,
+   e:"列是字典里的键，<b>加一列就是给每一行的字典加同一个键</b>。加在列表上会变成「多出一行」，加在列表外面则丢掉了行列对应关系（见第 01、04 节）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——第 1 次课下半场到此闭环，下次课学 for 与函数。"
+        :score>=4?"不错——回到标错的章节，重点看第 01 的行列对应和第 02 的取列之难。"
+        :"建议从第 01 节重新过一遍，先记住三件事：一行一个字典、一列一个键、列表不能按名字取列。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

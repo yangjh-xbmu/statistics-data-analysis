@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字典 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+  .meta .chip code{font-family:var(--mono)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .lead code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+  .caption code{font-family:var(--mono)}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .opts .opt code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .explain code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:4px}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  .crumbs{font-size:13.5px;color:var(--ink3);margin-top:28px}
+  .crumbs a{color:var(--accent);text-decoration:none}
+  .crumbs .sep{margin:0 8px}
+  .pn{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;font-size:14px}
+  .pn a{color:var(--accent);text-decoration:none}
+
+  footer{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">运 算 符 与 容 器 · 03</div>
+  <h1>字典</h1>
+  <p class="sub">一条记录就是一个字典 —— 每个值都带着自己的名字（键）。按键取，键唯一、且必须不可变。</p>
+  <div class="meta">
+    <span class="chip">键唯一</span>
+    <span class="chip">取不到就 KeyError</span>
+    <span class="chip">不确定就用 <code>d.get()</code></span>
+  </div>
+</header>
+
+<nav class="crumbs">
+  <a href="index.html">← 运算符与容器 · 系列路径</a>
+  <span class="sep">›</span><span>字典</span>
+</nav>
+
+<!-- ============ 01 它是什么 ============ -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么 —— 一条记录</h2>
+  <p class="lead">一条学生记录可以用列表装，也可以用字典装。区别是：<b>列表要你记住「第 2 个是期末」，字典直接把名字写在值旁边。</b></p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 292" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>同一份记录在列表与字典里的两种放法</title>
+      <desc>左边是列表，三个值靠位置辨认；右边是字典，三个值各自带着键名，取值靠键不靠顺序。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">同一份信息，两种放法</text>
+
+      <rect x="20" y="44" width="310" height="164" rx="12" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="70" class="svgtext" font-size="12.5" fill="#78716C">列表：得记住位置</text>
+      <rect x="36" y="86" width="86" height="40" rx="8" fill="#F1EDE7"/>
+      <text x="79" y="110" class="svgtext" font-size="12" fill="#292524" text-anchor="middle">王思远</text>
+      <rect x="128" y="86" width="86" height="40" rx="8" fill="#F1EDE7"/>
+      <text x="171" y="110" class="svgmono" font-size="13" fill="#292524" text-anchor="middle">78</text>
+      <rect x="220" y="86" width="86" height="40" rx="8" fill="#F1EDE7"/>
+      <text x="263" y="110" class="svgmono" font-size="13" fill="#292524" text-anchor="middle">82</text>
+      <text x="79" y="144" class="svgmono" font-size="11" fill="#A8A29E" text-anchor="middle">0</text>
+      <text x="171" y="144" class="svgmono" font-size="11" fill="#A8A29E" text-anchor="middle">1</text>
+      <text x="263" y="144" class="svgmono" font-size="11" fill="#A8A29E" text-anchor="middle">2</text>
+      <text x="36" y="176" class="svgtext" font-size="12" fill="#A8A29E">想取期末，必须先记住「2 号位」</text>
+      <text x="36" y="198" class="svgtext" font-size="12" fill="#A8A29E">多一列，后面所有位置都挪了</text>
+
+      <rect x="350" y="44" width="310" height="164" rx="12" fill="#FBF7F4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="366" y="70" class="svgtext" font-size="12.5" fill="#C4633F">字典：每个值带名字</text>
+      <text x="366" y="102" class="svgmono" font-size="12" fill="#C4633F">name</text>
+      <text x="452" y="102" class="svgmono" font-size="12.5" fill="#292524">→ 王思远</text>
+      <text x="366" y="132" class="svgmono" font-size="12" fill="#C4633F">midterm</text>
+      <text x="452" y="132" class="svgmono" font-size="12.5" fill="#292524">→ 78</text>
+      <text x="366" y="162" class="svgmono" font-size="12" fill="#C4633F">final</text>
+      <text x="452" y="162" class="svgmono" font-size="12.5" fill="#292524">→ 82</text>
+      <text x="366" y="196" class="svgtext" font-size="12" fill="#A8A29E">键是自己起的名字，写一次就一直能用</text>
+
+      <text x="20" y="240" class="svgtext" font-size="12.5" fill="#78716C">字典在 Python 3.7 之后按插入次序保存键 —— 但取值靠名字，不靠顺序，顺序只影响打印出来长什么样。</text>
+      <text x="20" y="266" class="svgtext" font-size="12.5" fill="#78716C">一份 30 人的成绩表，就是 30 个这样的字典排成一个列表 —— 那是第 04 页要讲的事。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方定义：「可以把字典理解为<i>键值对</i>的集合，但字典的键必须是唯一的」；键是索引方式，与序列用连续整数索引不同</p>
+</section>
+
+<!-- ============ 02 核心设计 ============ -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心设计 —— 读一个键，三种结果</h2>
+  <p class="lead">同一个键，写法不同就有三种命运：<b>取到值、程序中断、或者拿到一个你给的默认值。</b>选哪种写法，取决于这个键你有没有把握。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 332" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>字典取值的三条路与键的资格</title>
+      <desc>三行对照：下标取到值、下标取不存在的键报 KeyError、get 返回默认值；下方列出可以当键与不能当键的类型。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">d = {"name": "王思远", "midterm": 78, "final": 82}</text>
+
+      <rect x="20" y="44" width="640" height="48" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="34" y="73" class="svgmono" font-size="12.5" fill="#292524">d["midterm"]</text>
+      <text x="230" y="73" class="svgmono" font-size="12.5" fill="#3D7A50">→ 78</text>
+      <text x="400" y="73" class="svgtext" font-size="12" fill="#78716C">✓ 键在，正常取出</text>
+
+      <rect x="20" y="100" width="640" height="48" rx="10" fill="#F9EEEC" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="34" y="129" class="svgmono" font-size="12.5" fill="#292524">d["总评"]</text>
+      <text x="230" y="129" class="svgmono" font-size="12.5" fill="#B4433A">→ KeyError</text>
+      <text x="400" y="129" class="svgtext" font-size="12" fill="#78716C">✗ 键不在，程序停在这一行</text>
+
+      <rect x="20" y="156" width="640" height="48" rx="10" fill="#FBF7F4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="34" y="185" class="svgmono" font-size="12.5" fill="#292524">d.get("总评", 0)</text>
+      <text x="230" y="185" class="svgmono" font-size="12.5" fill="#3D7A50">→ 0</text>
+      <text x="400" y="185" class="svgtext" font-size="12" fill="#78716C">✓ 键不在，用你给的默认值继续跑</text>
+
+      <line x1="20" y1="222" x2="660" y2="222" stroke="#E8E3DC" stroke-width="1"/>
+
+      <text x="20" y="248" class="svgtext" font-size="12.5" fill="#78716C">能当键的 / 不能当键的</text>
+      <rect x="20" y="260" width="104" height="34" rx="8" fill="#EDF4EF" stroke="#3D7A50" stroke-width="1"/>
+      <text x="72" y="282" class="svgmono" font-size="12" fill="#3D7A50" text-anchor="middle">'王思远'</text>
+      <rect x="134" y="260" width="104" height="34" rx="8" fill="#EDF4EF" stroke="#3D7A50" stroke-width="1"/>
+      <text x="186" y="282" class="svgmono" font-size="12" fill="#3D7A50" text-anchor="middle">42</text>
+      <rect x="248" y="260" width="104" height="34" rx="8" fill="#EDF4EF" stroke="#3D7A50" stroke-width="1"/>
+      <text x="300" y="282" class="svgmono" font-size="12" fill="#3D7A50" text-anchor="middle">(78, 82)</text>
+      <rect x="362" y="260" width="104" height="34" rx="8" fill="#F9EEEC" stroke="#B4433A" stroke-width="1"/>
+      <text x="414" y="282" class="svgmono" font-size="12" fill="#B4433A" text-anchor="middle">[78, 82]</text>
+      <text x="480" y="282" class="svgtext" font-size="12" fill="#78716C">← 列表可以改，所以不能当键</text>
+
+      <text x="20" y="320" class="svgtext" font-size="12.5" fill="#A8A29E">键必须是不可变（可哈希）的：字符串、数字、元组都可以；元组里一旦装了列表，也就跟着不能用了。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方原文：「通过下标操作 (d[key]) 提取不存在的键的值会引发 KeyError。要避免……可改用 get() 方法，它会在字典不存在某个键时返回 None (或指定的默认值)」</p>
+</section>
+
+<!-- ============ 03 运行全程 ============ -->
+<section>
+  <div class="secnum">03</div>
+  <h2>运行全程 —— 写进去用方括号，读出来用 get</h2>
+  <p class="lead">字典上唯一值得背下来的分工：<b>写入用 <code>d[key] = 值</code>（键不存在就新增、已存在就覆盖），读取不确定就用 <code>d.get()</code>。</b></p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 196" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>字典的四步：建、加、改、读</title>
+      <desc>四个方块依次是建立字典、新增字段、覆盖已有字段、用 get 读取可能不存在的字段，其中加与改用的是同一个键。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">加和改，用的是同一句写法</text>
+
+      <rect x="20" y="44" width="151" height="86" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="68" class="svgtext" font-size="11.5" fill="#78716C">① 建一条记录</text>
+      <text x="36" y="94" class="svgmono" font-size="11" fill="#292524">d = {"name": ...}</text>
+      <text x="36" y="116" class="svgtext" font-size="11" fill="#A8A29E">花括号里是键值对</text>
+
+      <rect x="183" y="44" width="151" height="86" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="68" class="svgtext" font-size="11.5" fill="#78716C">② 加一个字段</text>
+      <text x="199" y="94" class="svgmono" font-size="11" fill="#292524">d["final"] = 82</text>
+      <text x="199" y="116" class="svgtext" font-size="11" fill="#A8A29E">键不存在 → 新增</text>
+
+      <rect x="346" y="44" width="151" height="86" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="362" y="68" class="svgtext" font-size="11.5" fill="#C4633F">③ 改一个字段</text>
+      <text x="362" y="94" class="svgmono" font-size="11" fill="#292524">d["final"] = 90</text>
+      <text x="362" y="116" class="svgtext" font-size="11" fill="#C4633F">键已存在 → 覆盖，旧值丢</text>
+
+      <rect x="509" y="44" width="151" height="86" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="525" y="68" class="svgtext" font-size="11.5" fill="#78716C">④ 读一个字段</text>
+      <text x="525" y="94" class="svgmono" font-size="11" fill="#292524">d.get("总评", 0)</text>
+      <text x="525" y="116" class="svgtext" font-size="11" fill="#A8A29E">不确定 → 拿默认值</text>
+
+      <text x="20" y="162" class="svgtext" font-size="12.5" fill="#A8A29E">② 和 ③ 的写法一模一样，成败只取决于这个键之前有没有出现过 —— 所以「覆盖」这件事没有任何提示。</text>
+      <text x="20" y="184" class="svgtext" font-size="12.5" fill="#A8A29E">写错了键名（比如 final 拼成 finel），不会报错，只会悄悄多出一个字段。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方说明：「如果你使用已存在的键进行存储，则与该键相关联的旧值将丢失」—— 这是新增与覆盖共用一套语法的代价</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt">字典按名字取，没有「第几号位」</div>
+      <div class="rd"><code>d[0]</code> 只有在你真的以 <code>0</code> 为键时才成立。要按位置取，那是列表的活。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt">键唯一，且必须不可变（可哈希）</div>
+      <div class="rd">字符串、数字、元组可以当键；<b>列表不行</b>——它可改，哈希值会变。<code>{[78, 82]: 'x'}</code> 直接 TypeError。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt">写入用 <code>d[key] = 值</code>：键不存在是新增，已存在是覆盖</div>
+      <div class="rd">两种意图共用一句写法，旧值<b>静默丢失</b>。要累加就得先读出来：<code>d['n'] = d.get('n', 0) + 1</code>。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt">读取不确定，就用 <code>d.get(key, 默认值)</code></div>
+      <div class="rd"><code>d[key]</code> 取不到直接 KeyError 中断。真实数据里字段常有缺，这一条会救你很多次。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt"><code>len(d)</code> 数的是键值对个数；<code>list(d)</code> 给键的列表</div>
+      <div class="rd"><code>d.keys()</code> / <code>d.values()</code> / <code>d.items()</code> 三种视图，分别给你键、值、成对的 (键, 值)。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html#dictionaries" target="_blank" rel="noopener">
+      <div class="st">数据结构 · 5.5 字典</div>
+      <div class="sd">「字典是以<b>键</b>来索引的，键可以是任何不可变类型」；「可以把字典理解为<i>键值对</i>的集合，但字典的键必须是唯一的」；「花括号 <code>{}</code> 用于创建空字典」；「提取不存在的键的值会引发 KeyError……可改用 <code>get()</code>」；「<code>list(d)</code> 返回该字典中所有键的列表，按插入次序排列」</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/datastructures.html#dictionaries</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#mapping-types-dict" target="_blank" rel="noopener">
+      <div class="st">内置类型 · 映射类型 dict</div>
+      <div class="sd">映射以<b>可哈希</b>对象为键；<code>d[key]</code> 取不存在的键引发 KeyError；<code>get(key[, default])</code> 与 <code>setdefault</code> 的行为差异；<code>keys</code> / <code>values</code> / <code>items</code> 三种视图</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/stdtypes.html#mapping-types-dict</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/glossary.html#term-hashable" target="_blank" rel="noopener">
+      <div class="st">术语表 · hashable（可哈希）</div>
+      <div class="sd">可哈希的对象在其生命期内哈希值不变、可与其他对象比较；不可变类型通常可哈希，<b>列表等可变容器不可</b> —— 第 02 节右下角那个红框的依据</div>
+      <div class="sl">docs.python.org/zh-cn/3/glossary.html#term-hashable</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#len" target="_blank" rel="noopener">
+      <div class="st">内置函数 · len</div>
+      <div class="sd">对字典返回键值对的个数；对列表、字符串返回元素个数</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html#len</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/glossary.html#term-mutable" target="_blank" rel="noopener">
+      <div class="st">术语表 · mutable（可变）</div>
+      <div class="sd">「可变对象可以改变其值，值改变后 <code>id()</code> 不变」—— 这就是列表不能当键的原因</div>
+      <div class="sl">docs.python.org/zh-cn/3/glossary.html#term-mutable</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<nav class="pn">
+  <a href="python-list-guide.html">← 上一页 · 列表</a>
+  <a href="python-table-guide.html">下一页 · 列表套字典 = 一张表 →</a>
+</nav>
+
+<footer>
+  本手册依据上述原始出处整理，其中数值结果均在本机 Python 3.13.14 实测 · 生成于 2026-09-16<br>
+  所属系列：运算符与容器（第 1 次课下半场）· <a href="index.html">返回概念地图</a> · 切分表见 <a href="_series/concepts.md">_series/concepts.md</a>
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:'d = {"name": "王思远", "final": 82}，d["final"] 得到什么？',
+   o:["'final'","2","82","KeyError"],a:2,
+   e:"字典是<b>按键取</b>：<code>d[name]</code> 里的那个名字是键，取出来的是它对应的值（见第 01、02 节）。"},
+  {lv:1,lt:"基础 · 识别",q:'len({"name": "王思远", "final": 82, "attendance": 0.96}) 数的是什么？',
+   o:["所有字符的总数","3：键值对的个数","2：值的个数","0.96"],a:1,
+   e:"对字典来说 <code>len()</code> 数的是<b>键值对</b>的个数，三个键就是 3；它不关心值的类型（见第 04 节铁律 5）。"},
+  {lv:2,lt:"进阶 · 理解",q:"d 里没有 midterm 这个键，下面哪一句不会让程序中断？",
+   o:["d['midterm']","d.midterm","d.get('midterm')","d['midterm', 0]"],a:2,
+   e:"<code>d[key]</code> 取不到会引发 <b>KeyError</b>；<code>get()</code> 在键不存在时返回 None 或你给的默认值。官方原文就是这么给的替代方案（见第 02、04 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"下面哪一个不能当字典的键？",
+   o:["'王思远'","[78, 82]","42","(78, 82)"],a:1,
+   e:"键必须是<b>不可变（可哈希）</b>的。列表可以改、哈希值会变，所以直接 TypeError: unhashable type: 'list'；元组不可改，可以当键（见第 02、04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"依次执行 d = {}、d['midterm'] = 78、d['midterm'] = 80 之后，d 里有几个键值对，midterm 是多少？",
+   o:["2 个，80","1 个，78","2 个，78","1 个，80"],a:3,
+   e:"键已存在时的赋值是<b>覆盖</b>，不是新增：官方原文「与该键相关联的旧值将丢失」。所以只有一个键，值被换成 80（见第 03、04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"30 条记录里，有几个人缺考、记录中根本没有 final 这个键。要算有分数的人的平均分，最稳的是？",
+   o:['sum(r["final"] for r in rows) / len(rows)','直接把 r["final"] 求和，缺考的当作 0','先给每个缺考的人补上 final=0，再用 sum()','累加 r.get("final") 且跳过 None，最后除以有分数的人数'],a:3,
+   e:"用 <code>d[key]</code> 求和会<b>在第一个缺考的人身上中断</b>；补 0 是把「没考」改写成「考了 0 分」，那是改数据不是算数据。稳妥做法是 <code>get()</code> 兜底、跳过缺失，再除以真正有分数的人数（见第 02、04 节）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——记录这一层通了，接下来把它们摆成一张表。"
+        :score>=4?"不错——回到标错的章节，重点看第 02 的三种取值和第 04 的铁律 3、4。"
+        :"建议从第 01 节重新过一遍，先记住三件事：按键取、键必须不可变、不确定就用 get。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运算符与容器 · 学习系列</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+
+  .cmap{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .cmap .pcard{display:flex;gap:18px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px}
+  .cmap .pcard.pending{background:#FCFBF9;border-style:dashed}
+  .cmap .pnum{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600}
+  .cmap .pcard.pending .pnum{background:var(--ink3)}
+  .cmap .pt{font-size:17px;font-weight:600}
+  .cmap .pt a{color:inherit;text-decoration:none}
+  .cmap .pt a:hover{color:var(--accent)}
+  .cmap .pd{color:var(--ink2);font-size:14px;margin-top:3px}
+  .cmap .pmeta{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  .tag{font-size:12px;border-radius:999px;padding:3px 11px;border:1px solid var(--border);color:var(--ink2)}
+  .tag.ok{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+  .tag.soon{border-style:dashed;color:var(--ink3)}
+  .cmap .chk{margin-left:auto;font-size:12.5px;color:var(--ink3);display:flex;align-items:center;gap:6px;white-space:nowrap;cursor:pointer;padding-top:4px}
+  .cmap .chk input{accent-color:var(--accent);width:15px;height:15px}
+
+  .terms{margin-top:28px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)}
+  .terms .tr{display:flex;gap:20px;padding:14px 22px;border-bottom:1px solid var(--border);font-size:14.5px}
+  .terms .tr:last-child{border-bottom:none}
+  .terms .tk{flex:0 0 160px;font-weight:600;font-family:var(--mono);font-size:13.5px;color:var(--accent)}
+  .terms .tv{color:var(--ink2)}
+
+  .how{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .how .hrow{display:flex;gap:18px;padding:16px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .how .hrow:last-child{border-bottom:none}
+  .how .hn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:22px;font-weight:700}
+  .how .ht{font-size:16px}
+  .how .ht b{font-weight:650}
+  .how .hd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">学 习 系 列</div>
+  <h1>运算符与容器</h1>
+  <p class="sub">四个概念、四页手册 —— 先会算，再会装一列，再会装一条，最后把行与列拼成一张表。</p>
+  <div class="meta">
+    <span class="chip">4 篇单概念手册</span>
+    <span class="chip">每篇约 15 分钟</span>
+    <span class="chip">第 2、3 篇顺序可互换</span>
+  </div>
+</header>
+
+<section>
+  <div class="secnum">01</div>
+  <h2>概念地图</h2>
+  <p class="lead">每个概念单独一页，<b>一页只讲一件事</b>。标注「待生成」的条目尚未落盘，落地后会自动变为可点入口。</p>
+  <div class="cmap" id="cmap"></div>
+</section>
+
+<section>
+  <div class="secnum">02</div>
+  <h2>学习顺序与依赖</h2>
+  <p class="lead">顺序不是并列的：<b>先会算，再会装；行与列都认得了，才谈「一张表」</b>。</p>
+  <div class="card">
+    <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>四个概念的学习顺序与依赖</title>
+      <desc>运算符、列表、字典、列表套字典依次排列，第四页同时依赖列表与字典，并回指字典的取值方式。</desc>
+      <defs>
+        <marker id="oc1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#C4633F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="oc2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="#A8A29E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <rect x="20" y="24" width="140" height="58" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="90" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle">① 运算符</text>
+      <text x="90" y="68" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle">值怎么算出来</text>
+      <line x1="163" y1="53" x2="177" y2="53" stroke="#C4633F" stroke-width="1.5" marker-end="url(#oc1)"/>
+      <rect x="180" y="24" width="140" height="58" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="250" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle">② 列表</text>
+      <text x="250" y="68" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle">按位置取</text>
+      <line x1="323" y1="53" x2="337" y2="53" stroke="#C4633F" stroke-width="1.5" marker-end="url(#oc1)"/>
+      <rect x="340" y="24" width="140" height="58" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="410" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle">③ 字典</text>
+      <text x="410" y="68" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle">按名字取</text>
+      <line x1="483" y1="53" x2="497" y2="53" stroke="#C4633F" stroke-width="1.5" marker-end="url(#oc1)"/>
+      <rect x="500" y="24" width="140" height="58" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="570" y="48" class="svgtext" font-size="12.5" font-weight="600" fill="#C4633F" text-anchor="middle">④ 一张表</text>
+      <text x="570" y="68" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle">行列合起来</text>
+      <path d="M570 86 L570 116 L90 116 L90 88" fill="none" stroke="#A8A29E" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#oc2)"/>
+      <text x="330" y="134" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="middle">② 与 ③ 可互换：一个按位置取、一个按名字取，互不依赖</text>
+      <text x="330" y="154" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="middle">④ 的行就是 ③ 的字典、④ 的列就是 ② 的顺序 —— 缺字段时还要用回 ③ 的 get()</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 顺序与依赖同时写进「_series/concepts.md」，各页的上下页导航按此排列</p>
+</section>
+
+<section>
+  <div class="secnum">03</div>
+  <h2>术语表 · 全系列统一措辞</h2>
+  <p class="lead">同一件事只有一种叫法，<b>各页不得混称</b>。</p>
+  <div class="terms">
+    <div class="tr"><div class="tk">运算符</div><div class="tv">把值算成新值的符号（+ - * / // % **，以及比较与逻辑符号）</div></div>
+    <div class="tr"><div class="tk">表达式</div><div class="tv">能算出一个值的写法，例如 sum(s) / len(s)</div></div>
+    <div class="tr"><div class="tk">下标 / 索引</div><div class="tv">列表里位置的编号，从 0 起；负数从 -1 开始倒着数</div></div>
+    <div class="tr"><div class="tk">切片</div><div class="tv">s[i:j]，取下标 i 到 j 之前 —— 含头不含尾</div></div>
+    <div class="tr"><div class="tk">元素 / 项</div><div class="tv">列表里的一个值</div></div>
+    <div class="tr"><div class="tk">键 / 值（键值对）</div><div class="tv">字典里成对的两半：键是名字、值是内容，写作 key: value</div></div>
+    <div class="tr"><div class="tk">记录 / 个案</div><div class="tv">表的一行，在 Python 里就是一个字典</div></div>
+    <div class="tr"><div class="tk">一列 / 变量</div><div class="tv">表里同一个键的一整列，也就是所有行 r[key] 拼起来</div></div>
+    <div class="tr"><div class="tk">数据表 / 数据集</div><div class="tv">列表套字典：列表给行、字典给列，行列齐备</div></div>
+    <div class="tr"><div class="tk">可变 / 不可变</div><div class="tv">列表可变、字符串与元组不可变；字典的键必须不可变（可哈希）</div></div>
+    <div class="tr"><div class="tk">浅拷贝</div><div class="tv">只复制最外层容器，内部对象仍共享；a[:] 得到的就是浅拷贝</div></div>
+    <div class="tr"><div class="tk">均值 / 样本量</div><div class="tv">均值是 sum(x) / len(x)；样本量就是 len(x) 给的个数</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="secnum">04</div>
+  <h2>怎么用这套材料</h2>
+  <div class="how">
+    <div class="hrow"><span class="hn">1</span><div>
+      <div class="ht">一页看两遍：<b>先扫图，再读字</b></div>
+      <div class="hd">每节只有一句 lead 加一张图，图看不懂再回正文找。</div></div></div>
+    <div class="hrow"><span class="hn">2</span><div>
+      <div class="ht">先做自测，再回看<b>答错那一节</b></div>
+      <div class="hd">六题三级：识别 → 理解 → 应用。解析里写了该回哪一节。</div></div></div>
+    <div class="hrow"><span class="hn">3</span><div>
+      <div class="ht">当堂动手：<b>手写 3 条同学记录</b>，算出一列成绩的均值</div>
+      <div class="hd">写完再看第 ④ 页的「四步」——你走的正是 pandas 之后要替你走的路。</div></div></div>
+  </div>
+</section>
+
+<footer>
+  系列切分表与来源池见 <a href="_series/concepts.md">_series/concepts.md</a> · <a href="_series/sources.md">_series/sources.md</a><br>
+  配套：上半场系列 <a href="../python-getting-started/index.html">Python 起步</a>（环境、Notebook、报错、变量与类型）<br>
+  历史版本：<a href="../../python-containers-guide.html">python-containers-guide.html</a>（四个概念的合并浅版，本系列逐页取代）· 生成于 2026-09-16
+</footer>
+</div>
+
+<script>
+const PAGES=[
+  {n:1,slug:"python-operators",file:"python-operators-guide.html",t:"运算符与表达式",
+   d:"运算符把值算成新值，算什么由操作数的类型决定",dep:"无前置",ready:true},
+  {n:2,slug:"python-list",file:"python-list-guide.html",t:"列表",
+   d:"一个名字装下有序的一列值，按位置取；切片含头不含尾",dep:"依赖 ①",ready:true},
+  {n:3,slug:"python-dict",file:"python-dict-guide.html",t:"字典",
+   d:"一条记录：按键取，键唯一且必须不可变，不确定就用 get",dep:"建议先看 ②",ready:true},
+  {n:4,slug:"python-table",file:"python-table-guide.html",t:"列表套字典 = 一张表",
+   d:"列表给行、字典给列，合起来就是数据表，也是 DataFrame 的前身",dep:"依赖 ② ③",ready:true}
+];
+const KEY="poc-progress";
+const box=document.getElementById("cmap");
+let mem=[];
+function load(){
+  try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){ return mem; }
+}
+function save(arr){
+  mem=arr;
+  try{ localStorage.setItem(KEY,JSON.stringify(arr)); }catch(e){}
+}
+function render(){
+  const done=load();
+  let h="";
+  PAGES.forEach(p=>{
+    const isDone=done.indexOf(p.slug)>-1;
+    const title=p.ready?`<a href="${p.file}">${p.t}</a>`:p.t;
+    const st=p.ready?`<span class="tag ok">已生成</span>`:`<span class="tag soon">待生成</span>`;
+    const dt=isDone?`<span class="tag ok">已学完</span>`:"";
+    h+=`<div class="pcard${p.ready?"":" pending"}">
+      <div class="pnum">${p.n}</div>
+      <div><div class="pt">${title}</div><div class="pd">${p.d}</div>
+        <div class="pmeta">${st}<span class="tag">前置：${p.dep}</span>${dt}</div></div>
+      <label class="chk"><input type="checkbox" data-slug="${p.slug}"${isDone?" checked":""}>学完</label>
+    </div>`;
+  });
+  box.innerHTML=h;
+  box.querySelectorAll("input").forEach(el=>{
+    el.onchange=()=>{
+      const s=el.getAttribute("data-slug");
+      let arr=load();
+      if(el.checked){ if(arr.indexOf(s)<0)arr.push(s); } else { arr=arr.filter(x=>x!==s); }
+      save(arr);
+      render();
+    };
+  });
+}
+render();
+</script>
+</body>
+</html>

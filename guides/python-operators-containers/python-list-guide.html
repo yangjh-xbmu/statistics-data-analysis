@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>列表 · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .meta .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+  .meta .chip code{font-family:var(--mono)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+  .lead code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+  .caption code{font-family:var(--mono)}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rules .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rules .rule:last-child{border-bottom:none}
+  .rules .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rules .rt{font-size:16.5px}
+  .rules .rt b{font-weight:650}
+  .rules .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rules code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .opts .opt code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:5px}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .explain code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:4px}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  .crumbs{font-size:13.5px;color:var(--ink3);margin-top:28px}
+  .crumbs a{color:var(--accent);text-decoration:none}
+  .crumbs .sep{margin:0 8px}
+  .pn{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;font-size:14px}
+  .pn a{color:var(--accent);text-decoration:none}
+
+  footer{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .svgmono{font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">运 算 符 与 容 器 · 02</div>
+  <h1>列表</h1>
+  <p class="sub">一个名字装下有序的一列值 —— 按位置取，下标从 0 起，切片含头不含尾。</p>
+  <div class="meta">
+    <span class="chip">下标从 0 起</span>
+    <span class="chip">切片含头不含尾</span>
+    <span class="chip">赋值不复制数据</span>
+  </div>
+</header>
+
+<nav class="crumbs">
+  <a href="index.html">← 运算符与容器 · 系列路径</a>
+  <span class="sep">›</span><span>列表</span>
+</nav>
+
+<!-- ============ 01 它是什么 ============ -->
+<section>
+  <div class="secnum">01</div>
+  <h2>它是什么 —— 有序的一列值</h2>
+  <p class="lead">列表是<b>把一列值放进一个名字里</b>，并且记住它们的先后。顺序不是装饰，换位置就是另一列数据。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 258" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>一列成绩的两个索引方向</title>
+      <desc>五个成绩方块排成一行，上排是正索引 0 到 4，下排是负索引 -5 到 -1，下方说明长度与顺序的含义。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">一个名字，一排值，一条顺序</text>
+      <text x="20" y="52" class="svgmono" font-size="12.5" fill="#78716C">s = [78, 85, 62, 91, 100]</text>
+
+      <rect x="92" y="66" width="88" height="44" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="136" y="94" class="svgmono" font-size="14" fill="#292524" text-anchor="middle">78</text>
+      <rect x="194" y="66" width="88" height="44" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="238" y="94" class="svgmono" font-size="14" fill="#292524" text-anchor="middle">85</text>
+      <rect x="296" y="66" width="88" height="44" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="340" y="94" class="svgmono" font-size="14" fill="#292524" text-anchor="middle">62</text>
+      <rect x="398" y="66" width="88" height="44" rx="8" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="442" y="94" class="svgmono" font-size="14" fill="#292524" text-anchor="middle">91</text>
+      <rect x="500" y="66" width="88" height="44" rx="8" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="544" y="94" class="svgmono" font-size="14" fill="#C4633F" text-anchor="middle">100</text>
+
+      <text x="136" y="128" class="svgmono" font-size="11.5" fill="#78716C" text-anchor="middle">s[0]</text>
+      <text x="238" y="128" class="svgmono" font-size="11.5" fill="#78716C" text-anchor="middle">s[1]</text>
+      <text x="340" y="128" class="svgmono" font-size="11.5" fill="#78716C" text-anchor="middle">s[2]</text>
+      <text x="442" y="128" class="svgmono" font-size="11.5" fill="#78716C" text-anchor="middle">s[3]</text>
+      <text x="544" y="128" class="svgmono" font-size="11.5" fill="#78716C" text-anchor="middle">s[4]</text>
+      <text x="136" y="148" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">s[-5]</text>
+      <text x="238" y="148" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">s[-4]</text>
+      <text x="340" y="148" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">s[-3]</text>
+      <text x="442" y="148" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">s[-2]</text>
+      <text x="544" y="148" class="svgmono" font-size="11.5" fill="#C4633F" text-anchor="middle">s[-1]</text>
+
+      <text x="20" y="182" class="svgtext" font-size="12.5" fill="#78716C">正着数是 0、1、2……（第一个的下标是 0，不是 1）；倒着数是 -1、-2、-3…… 没有 -0，因为 -0 就是 0。</text>
+      <text x="20" y="208" class="svgtext" font-size="12.5" fill="#78716C">len(s) 给的是值的个数，不是一个「最大下标」—— 五个值的合法下标只到 4。</text>
+      <text x="20" y="234" class="svgtext" font-size="12.5" fill="#78716C">列表允许混着放不同类型，但一列数据通常同类型：混进一个文本，求和就会 TypeError。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方教程：「最常用的<i>列表</i>，是用方括号标注，逗号分隔的一组值」；「和字符串一样，列表也支持索引和切片」</p>
+</section>
+
+<!-- ============ 02 核心设计 ============ -->
+<section>
+  <div class="secnum">02</div>
+  <h2>核心设计 —— 切片是一把含头不含尾的尺</h2>
+  <p class="lead">切片 <code>s[i:j]</code> 的含义是<b>取下标 i 到 j 之前</b>：所以 <code>s[1:3]</code> 给两个值，不是三个。记住这一条，其余全是推论。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 276" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>切片 s[1:3] 的作用范围</title>
+      <desc>五个方块中标出下标 1 与 2 被切片选中，下方列出省略起点、省略终点与越界三种情形的结果。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">s[1:3] 到底圈住了谁</text>
+
+      <rect x="92" y="44" width="88" height="44" rx="8" fill="#F1EDE7"/>
+      <text x="136" y="72" class="svgmono" font-size="14" fill="#78716C" text-anchor="middle">78</text>
+      <rect x="194" y="44" width="88" height="44" rx="8" fill="#C4633F"/>
+      <text x="238" y="72" class="svgmono" font-size="14" fill="#FFFFFF" text-anchor="middle">85</text>
+      <rect x="296" y="44" width="88" height="44" rx="8" fill="#C4633F"/>
+      <text x="340" y="72" class="svgmono" font-size="14" fill="#FFFFFF" text-anchor="middle">62</text>
+      <rect x="398" y="44" width="88" height="44" rx="8" fill="#F1EDE7"/>
+      <text x="442" y="72" class="svgmono" font-size="14" fill="#78716C" text-anchor="middle">91</text>
+      <rect x="500" y="44" width="88" height="44" rx="8" fill="#F1EDE7"/>
+      <text x="544" y="72" class="svgmono" font-size="14" fill="#78716C" text-anchor="middle">100</text>
+
+      <text x="136" y="106" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">0</text>
+      <text x="238" y="106" class="svgmono" font-size="11.5" fill="#C4633F" text-anchor="middle">1</text>
+      <text x="340" y="106" class="svgmono" font-size="11.5" fill="#C4633F" text-anchor="middle">2</text>
+      <text x="442" y="106" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">3</text>
+      <text x="544" y="106" class="svgmono" font-size="11.5" fill="#A8A29E" text-anchor="middle">4</text>
+
+      <line x1="194" y1="126" x2="384" y2="126" stroke="#C4633F" stroke-width="1.5"/>
+      <line x1="194" y1="120" x2="194" y2="132" stroke="#C4633F" stroke-width="1.5"/>
+      <line x1="384" y1="120" x2="384" y2="132" stroke="#C4633F" stroke-width="1.5"/>
+      <text x="289" y="150" class="svgmono" font-size="12" fill="#C4633F" text-anchor="middle">含 1，不含 3</text>
+
+      <line x1="20" y1="170" x2="660" y2="170" stroke="#E8E3DC" stroke-width="1"/>
+
+      <text x="20" y="196" class="svgmono" font-size="12.5" fill="#78716C">s[1:3] → <tspan fill="#C4633F">[85, 62]</tspan>　　两个值，因为 3 号位不算</text>
+      <text x="20" y="220" class="svgmono" font-size="12.5" fill="#78716C">s[:2] → <tspan fill="#C4633F">[78, 85]</tspan>　　省略起点，默认从 0 开始</text>
+      <text x="20" y="244" class="svgmono" font-size="12.5" fill="#78716C">s[-2:] → <tspan fill="#C4633F">[91, 100]</tspan>　省略终点，默认一直到末尾</text>
+      <text x="20" y="268" class="svgmono" font-size="12.5" fill="#78716C">s[2:99] → <tspan fill="#C4633F">[62, 91, 100]</tspan>　越界不报错，自动截断</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 官方原文：切片是「下标 k 满足 <code>i &lt;= k &lt; j</code> 的元素序列」，所以 <code>s[:i] + s[i:]</code> 总等于 <code>s</code>；但下标越界会直接 IndexError</p>
+</section>
+
+<!-- ============ 03 运行全程 ============ -->
+<section>
+  <div class="secnum">03</div>
+  <h2>运行全程 —— 一列成绩的四步</h2>
+  <p class="lead">拿到一列数，动作永远是这四步：<b>数个数、求和、求均值、看分布</b>。四个内置函数，不改动原列表。</p>
+
+  <div class="card">
+    <svg viewBox="0 0 680 186" xmlns="http://www.w3.org/2000/svg" role="img">
+      <title>一列成绩的四个统计动作</title>
+      <desc>四个方块依次为长度的计数、求和、求均值和排序，各自给出对应的结果值。</desc>
+      <text x="20" y="24" class="svgtext" font-size="14" font-weight="600" fill="#292524">四个函数，一列数的全部底细</text>
+
+      <rect x="20" y="44" width="151" height="80" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="36" y="70" class="svgtext" font-size="11.5" fill="#78716C">① 样本量</text>
+      <text x="36" y="96" class="svgmono" font-size="12.5" fill="#292524">len(s)</text>
+      <text x="36" y="118" class="svgmono" font-size="15" fill="#C4633F">5</text>
+
+      <rect x="183" y="44" width="151" height="80" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="199" y="70" class="svgtext" font-size="11.5" fill="#78716C">② 总分</text>
+      <text x="199" y="96" class="svgmono" font-size="12.5" fill="#292524">sum(s)</text>
+      <text x="199" y="118" class="svgmono" font-size="15" fill="#C4633F">416</text>
+
+      <rect x="346" y="44" width="151" height="80" rx="10" fill="#F7EBE4" stroke="#E9D5C9" stroke-width="1"/>
+      <text x="362" y="70" class="svgtext" font-size="11.5" fill="#C4633F">③ 均分</text>
+      <text x="362" y="96" class="svgmono" font-size="12.5" fill="#292524">sum(s)/len(s)</text>
+      <text x="362" y="118" class="svgmono" font-size="15" fill="#C4633F">83.2</text>
+
+      <rect x="509" y="44" width="151" height="80" rx="10" fill="#FFFFFF" stroke="#E8E3DC" stroke-width="1"/>
+      <text x="525" y="70" class="svgtext" font-size="11.5" fill="#78716C">④ 看分布</text>
+      <text x="525" y="96" class="svgmono" font-size="12.5" fill="#292524">sorted(s)</text>
+      <text x="525" y="118" class="svgmono" font-size="12" fill="#C4633F">[62,78,85,91,100]</text>
+
+      <text x="20" y="152" class="svgtext" font-size="12.5" fill="#A8A29E">sorted(s) 返回的是一个新列表，s 本身一个元素都没动。</text>
+      <text x="20" y="174" class="svgtext" font-size="12.5" fill="#A8A29E">要「就地」排原列表，用 s.sort() —— 但它不返回结果，只动手。</text>
+    </svg>
+  </div>
+  <p class="caption">▲ 最大最小同族：<code>max(s)</code> 给 100，<code>min(s)</code> 给 62；这四个函数对列表和字符串一视同仁</p>
+</section>
+
+<!-- ============ 04 铁律 ============ -->
+<section>
+  <div class="secnum">04</div>
+  <h2>五条铁律</h2>
+  <div class="rules">
+    <div class="rule"><span class="rn">1</span><div>
+      <div class="rt">下标从 0 起，负数从 -1 起倒数</div>
+      <div class="rd"><code>s[0]</code> 是第一个，<code>s[-1]</code> 是最后一个。五个值的合法下标只到 4，<code>s[5]</code> 就报 IndexError。</div></div></div>
+    <div class="rule"><span class="rn">2</span><div>
+      <div class="rt">切片<b>含头不含尾</b>，而且越界不报错</div>
+      <div class="rd"><code>s[1:3]</code> 取下标 1、2 两个值。下标越界是 IndexError，切片越界却只是自动截断 —— <code>s[2:99]</code> 照样给你剩下的。</div></div></div>
+    <div class="rule"><span class="rn">3</span><div>
+      <div class="rt">赋值不复制数据 —— <code>b = a</code> 之后改 b 就是改 a</div>
+      <div class="rd">官方原话：「简单赋值绝不会复制数据」。要一份互不影响的副本，用切片 <code>a[:]</code>（浅拷贝：只复制最外层）。</div></div></div>
+    <div class="rule"><span class="rn">4</span><div>
+      <div class="rt">会改列表的方法<b>只动手、不返回结果</b></div>
+      <div class="rd"><code>append</code>、<code>sort</code>、<code>remove</code> 的返回值都是 None。写 <code>s = s.sort()</code> 会把整个列表换成 None。</div></div></div>
+    <div class="rule"><span class="rn">5</span><div>
+      <div class="rt"><code>sorted()</code> 返回新列表，<code>s.sort()</code> 改原列表</div>
+      <div class="rd">要保留原始顺序做对比，用 <code>sorted(s)</code>；确定不再需要原顺序，才用 <code>s.sort()</code>。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 05 溯源 ============ -->
+<section>
+  <div class="secnum">05</div>
+  <h2>原始出处 · 点击验证</h2>
+  <div class="src">
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">
+      <div class="st">Python 速览 · 3.1.3 列表</div>
+      <div class="sd">「最常用的<i>列表</i>，是用方括号标注，逗号分隔的一组值」；索引与切片示例；「与不可变字符串不同，列表是<b>可变</b>类型」；「简单赋值绝不会复制数据」；切片返回浅拷贝</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/introduction.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">
+      <div class="st">数据结构 · 5.1 列表详解</div>
+      <div class="sd">列表方法总表：append / extend / insert / remove / pop / clear / index / count / sort / reverse / copy；「仅修改列表的方法……返回默认值 None」；列表可以嵌套</div>
+      <div class="sl">docs.python.org/zh-cn/3/tutorial/datastructures.html</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html#common-sequence-operations" target="_blank" rel="noopener">
+      <div class="st">内置类型 · 序列通用操作</div>
+      <div class="sd">切片 <code>s[i:j]</code> 的正式定义：下标 k 满足 <code>i &lt;= k &lt; j</code>；负索引等价于 <code>len(s) + i</code>；i 或 j 越界时自动截断</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/stdtypes.html#common-sequence-operations</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#len" target="_blank" rel="noopener">
+      <div class="st">内置函数 · len</div>
+      <div class="sd">返回对象的长度（元素个数）；对列表、字符串、字典都适用</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html#len</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html#sorted" target="_blank" rel="noopener">
+      <div class="st">内置函数 · sorted</div>
+      <div class="sd">「从 iterable 返回新的排序列表」—— 与原地排序的 <code>list.sort()</code> 分工不同</div>
+      <div class="sl">docs.python.org/zh-cn/3/library/functions.html#sorted</div>
+    </a>
+    <a href="https://docs.python.org/zh-cn/3/glossary.html#term-mutable" target="_blank" rel="noopener">
+      <div class="st">术语表 · mutable（可变）</div>
+      <div class="sd">「可变对象可以改变其值，值改变后 <code>id()</code> 不变」—— 列表可变、字符串与元组不可变，这是第 03、04 节全部行为的根</div>
+      <div class="sl">docs.python.org/zh-cn/3/glossary.html#term-mutable</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 06 自测 ============ -->
+<section>
+  <div class="secnum">06</div>
+  <h2>自测 · 难度递进</h2>
+  <p class="lead">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz"></div>
+</section>
+
+<nav class="pn">
+  <a href="python-operators-guide.html">← 上一页 · 运算符与表达式</a>
+  <a href="python-dict-guide.html">下一页 · 字典 →</a>
+</nav>
+
+<footer>
+  本手册依据上述原始出处整理，其中数值结果均在本机 Python 3.13.14 实测 · 生成于 2026-09-16<br>
+  所属系列：运算符与容器（第 1 次课下半场）· <a href="index.html">返回概念地图</a> · 切分表见 <a href="_series/concepts.md">_series/concepts.md</a>
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"s = [78, 85, 62]，s[0] 与 s[-1] 分别是多少？",
+   o:["85 和 78","78 和 62","78 和 85","62 和 78"],a:1,
+   e:"<b>下标从 0 起、负数从 -1 倒数</b>：s[0] 是第一个 78，s[-1] 是最后一个 62（见第 01 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"len([78, 85, 62, 91]) 得到什么？",
+   o:["3","91","5","4"],a:3,
+   e:"<code>len()</code> 给的是<b>值的个数</b>，四个值就是 4；它不是什么「最大下标」（合法下标只到 3）（见第 01、03 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"s = [78, 85, 62, 91, 100]，s[1:3] 得到什么？",
+   o:["[78, 85]","[85, 62, 91]","[85, 62]","[62, 91]"],a:2,
+   e:"切片<b>含头不含尾</b>：取下标 1 和 2，共两个。官方写法是「下标 k 满足 i &lt;= k &lt; j」（见第 02 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"同一个 s = [78, 85, 62, 91, 100]，s[10] 与 s[10:] 的差别是什么？",
+   o:["两个都报 IndexError","两个都返回空列表","s[10:] 报 IndexError，s[10] 返回 None","s[10] 报 IndexError，s[10:] 返回 []"],a:3,
+   e:"<b>下标越界是错，切片越界自动截断</b>：s[10] 直接 IndexError，s[10:] 只是给你剩下的部分——这里是空的 []（见第 02、04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"a = [1, 2, 3]，接着执行 b = a 和 b.append(4)，此时 a 是什么？",
+   o:["[1, 2, 3]","[1, 2, 3, 4]","[]","报错：两个名字不能指向同一个列表"],a:1,
+   e:"官方原话：<b>「简单赋值绝不会复制数据」</b>。b = a 只是多贴了一个名字，改 b 就是改 a；要独立副本用 <code>a[:]</code>（见第 04 节铁律 3）。"},
+  {lv:3,lt:"挑战 · 应用",q:"想把成绩按低到高排，同时保留原来的顺序不动，该写哪一句？",
+   o:["s.sort()","s = s.sort()","sorted(s)","s.reverse()"],a:2,
+   e:"<code>sorted(s)</code> <b>返回新列表</b>，原列表不动；<code>s.sort()</code> 原地排、原顺序丢失；<code>s = s.sort()</code> 更糟——它会因为返回 None 把整个列表换掉（见第 03、04 节）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——列表这一层通了，接着看字典。"
+        :score>=4?"不错——回到标错的章节，重点看第 02 的切片尺和第 04 的铁律 3、4。"
+        :"建议从第 01 节重新过一遍，先记住三件事：下标从 0 起、切片含头不含尾、赋值不复制数据。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>

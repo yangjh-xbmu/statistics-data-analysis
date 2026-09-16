@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Be4Zx9hrEzYuKRNUZM0neA">
+<head data-page-node-id="nOc0eMxJ5aOxaJASI6LOQq">
+<meta charset="UTF-8" data-page-node-id="kwKzmZA2UC7xpoZKcruJCa">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="Jvnmq6PHZa80YzIQ9exLcE">
+<title>LLM Wiki · 学习手册</title>
+<style>
+  :root{
+    --bg:#FAF9F7; --card:#FFFFFF; --border:#E8E3DC;
+    --ink:#292524; --ink2:#78716C; --ink3:#A8A29E;
+    --accent:#C4633F; --accent-soft:#F7EBE4; --accent-line:#E9D5C9;
+    --ok:#3D7A50; --ok-soft:#EDF4EF; --bad:#B4433A; --bad-soft:#F9EEEC;
+    --mono:"Cascadia Code",Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  header{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:13px;letter-spacing:.25em;color:var(--accent);font-weight:600;margin-bottom:18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:52px;font-weight:400;letter-spacing:-.01em;line-height:1.15}
+  .sub{margin-top:18px;font-size:19px;color:var(--ink2)}
+  .meta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+  .chip{font-size:13px;color:var(--ink2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;background:var(--card)}
+
+  section{padding:64px 0 8px}
+  .secnum{font-family:Georgia,serif;font-size:15px;color:var(--accent);letter-spacing:.2em;margin-bottom:10px}
+  h2{font-size:26px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px}
+  .lead{color:var(--ink2);font-size:17px;max-width:620px}
+  .lead b{color:var(--ink);font-weight:600}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin-top:28px}
+  .caption{font-size:13.5px;color:var(--ink3);margin-top:14px;text-align:center}
+
+  .rules{margin-top:28px;display:flex;flex-direction:column;gap:0}
+  .rule{display:flex;gap:20px;padding:20px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .rule:last-child{border-bottom:none}
+  .rule .rn{font-family:Georgia,serif;color:var(--accent);font-size:15px;min-width:26px;font-weight:700}
+  .rule .rt{font-size:16.5px}
+  .rule .rt b{font-weight:650}
+  .rule .rd{color:var(--ink2);font-size:14.5px;margin-top:2px}
+  .rule code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px}
+
+  .src{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+  .src a{display:block;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+  .src a:hover{border-color:var(--accent)}
+  .src .st{font-weight:600;font-size:15.5px}
+  .src .sd{color:var(--ink2);font-size:13.5px;margin-top:3px}
+  .src .sl{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin-top:7px;word-break:break-all}
+
+  #quiz{margin-top:28px}
+  .qlevel{display:inline-block;font-size:12px;letter-spacing:.15em;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:14px}
+  .lv1{background:var(--accent-soft);color:var(--accent)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:#F2E8E2;color:#8A4A2F}
+  .qq{font-size:18px;font-weight:600;line-height:1.6}
+  .qidx{color:var(--ink3);font-weight:400;font-size:14px;margin-right:8px}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .opts .opt{text-align:left;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:15.5px;color:var(--ink);cursor:pointer;font-family:inherit;line-height:1.55;transition:border-color .12s,background .12s}
+  .opts .opt:hover:not(:disabled){border-color:var(--accent)}
+  .opts .opt:disabled{cursor:default}
+  .opts .opt.right{border-color:var(--ok);background:var(--ok-soft)}
+  .opts .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .opts .opt .tag{font-size:12px;font-weight:700;margin-right:10px;color:var(--ink3)}
+  .explain{margin-top:18px;border-left:3px solid var(--accent);background:var(--card);padding:14px 18px;font-size:14.5px;color:var(--ink2);border-radius:0 10px 10px 0}
+  .explain b{color:var(--ink)}
+  .btnrow{margin-top:22px;display:flex;justify-content:flex-end}
+  .btn{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:15px;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#44403C}
+  .btn:disabled{background:var(--border);cursor:default}
+  .result{text-align:center;padding:30px 0 10px}
+  .result .score{font-family:Georgia,serif;font-size:56px;color:var(--accent)}
+  .result .verdict{color:var(--ink2);margin-top:8px}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--ink3)}
+  footer a{color:var(--accent);text-decoration:none}
+  svg{display:block;width:100%;height:auto}
+  .svgtext{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+</style>
+</head>
+<body data-page-node-id="ATZGM1xh7BCweEgsoI5y09">
+<div class="wrap" data-page-node-id="ZJQtA8UgLiALNleOvK9GLa">
+
+<header data-page-node-id="qlN00KfLGDsv9EKYRpYEMA">
+  <div class="eyebrow" data-page-node-id="GlUbAvsFt8HZFOePDA7RqH">学 习 手 册 · 溯 源 版</div>
+  <h1 data-page-node-id="AFoWDtXDyrgM4BDFO7QYqS">LLM Wiki</h1>
+  <p class="sub" data-page-node-id="Lg1NDyvwIFtToDD4kKFgxv">让大模型把资料「编译」成互链知识库 —— 先消化，再提问。</p>
+  <div class="meta" data-page-node-id="HTmmz5gs5Cwyyhp1W9EEOv">
+    <span class="chip" data-page-node-id="BcpsJ9irqdhFtGn3QW0Xhy">源自 Karpathy 的知识管理思路</span>
+    <span class="chip" data-page-node-id="CETGspDyKJj1rkE8S8HGVn">先编译，后提问</span>
+    <span class="chip" data-page-node-id="CmfN35nCqUEQaBD8e5R10i">Git 版本控制 · 可人工审核</span>
+    <span class="chip" data-page-node-id="uLvYZ26ghToQfSIEa1ZKGA">Obsidian 兼容双链</span>
+  </div>
+</header>
+
+<!-- ============ 01 它是什么 ============ -->
+<section data-page-node-id="UM0YIv91gFbl2GvZYCrCOo">
+  <div class="secnum" data-page-node-id="C9CvgcrdqD2VtAd5UBB1Zu">01</div>
+  <h2 data-page-node-id="HsSa2hUYSetx4GUbQFzBhg">它是什么</h2>
+  <p class="lead" data-page-node-id="g3GOG6EEYvPj3ILtQUo3wM">LLM Wiki 不是「用大模型写维基百科」，而是一套知识管理范式：把原始文档交给大模型，让它<b data-page-node-id="uzQNdpf2UHtJm0zdbK91LY">提取、归纳、互链</b>成一个结构化的持久知识库。之后的所有提问，都基于这个 Wiki 而不是重新翻原文。</p>
+
+  <div class="card" data-page-node-id="X1QI9snUuEFrbzqX7mzOOH">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" data-page-node-id="gBAxilryNX3k6xxix3tXnG">
+      <!-- raw docs -->
+      <rect x="20" y="60" width="150" height="180" rx="10" fill="none" stroke="#A8A29E" stroke-dasharray="6 5" data-page-node-id="qx7EWQUkNIBRaLRHLuAYCi"/>
+      <text x="95" y="48" class="svgtext" font-size="13" fill="#78716C" text-anchor="middle" data-page-node-id="Rzg8CCQ7xRHTO0CvU75lCY">raw/ 原始资料</text>
+      <rect x="36" y="66" width="118" height="30" rx="6" fill="#F1EDE7" data-page-node-id="ahjgxJ4IBnuZwexlQex3sO"/>
+      <text x="95" y="86" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="V86eEna0uLvnpDVU17d6xG">论文 PDF</text>
+      <rect x="36" y="104" width="118" height="30" rx="6" fill="#F1EDE7" data-page-node-id="3PDo9bPQKeDaJ9c3zD0jxo"/>
+      <text x="95" y="124" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="z9ODzolXlzdYIf9A55pb8E">文章 / 笔记</text>
+      <rect x="36" y="142" width="118" height="30" rx="6" fill="#F1EDE7" data-page-node-id="xtOKh6ZWKiKpU0XGajazxg"/>
+      <text x="95" y="162" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="RMUL88fcQR96SsIc8kJaUz">会议记录</text>
+      <rect x="36" y="180" width="118" height="30" rx="6" fill="#F1EDE7" data-page-node-id="sdnVpGd6uy4LiDJ18Qcubc"/>
+      <text x="95" y="200" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="1GHsB8YgxZvyDOsEsq4EaQ">网页 / JSON</text>
+      <!-- arrow -->
+      <line x1="186" y1="150" x2="272" y2="150" stroke="#C4633F" stroke-width="2.5" data-page-node-id="u6YKhCHWFA8b0BaH7zVocb"/>
+      <polygon points="272,144 286,150 272,156" fill="#C4633F" data-page-node-id="ffBcQjRZQZhZEKFkA22QlL"/>
+      <text x="229" y="136" class="svgtext" font-size="12.5" fill="#C4633F" text-anchor="middle" font-weight="600" data-page-node-id="6nis8lzWlSMlmYNZAtOn7i">LLM 编译</text>
+      <text x="229" y="172" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="vutQwy00XFSRPZU6zsyv2b">ingest</text>
+      <!-- wiki -->
+      <rect x="296" y="30" width="364" height="240" rx="12" fill="#FFFFFF" stroke="#C4633F" stroke-width="2" data-page-node-id="QjDBNw56fl1lMhBWoK0DAb"/>
+      <text x="316" y="60" class="svgtext" font-size="14" fill="#C4633F" font-weight="700" data-page-node-id="U3YmGfFRvba1vcnzYmahyH">wiki/ 持久知识库（Obsidian 兼容）</text>
+      <!-- nodes -->
+      <rect x="316" y="76" width="130" height="30" rx="6" fill="#F7EBE4" data-page-node-id="dNEwnUF3UnOIXRxbkeR9VB"/>
+      <text x="381" y="96" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="RcjjYoGnDBKW09E9nxCtQi">sources/ 源摘要</text>
+      <rect x="506" y="76" width="130" height="30" rx="6" fill="#F7EBE4" data-page-node-id="04ot98YzvG3qE9QD1GEQ0G"/>
+      <text x="571" y="96" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="FY9NY4yzBgqgOJPamUCnnG">entities/ 实体</text>
+      <rect x="316" y="130" width="130" height="30" rx="6" fill="#F7EBE4" data-page-node-id="Xxf5YErxECo6B5yBEQsjHv"/>
+      <text x="381" y="150" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="kzC50A94mwr1zwjwYqeYrz">concepts/ 概念</text>
+      <rect x="506" y="130" width="130" height="30" rx="6" fill="#F7EBE4" data-page-node-id="oQJrgtc25uMQp79vua7F6d"/>
+      <text x="571" y="150" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="KPQYoYUkYCGEjE2OwxmeH1">syntheses/ 综合</text>
+      <rect x="316" y="184" width="320" height="30" rx="6" fill="#C4633F" data-page-node-id="cfEBC8AVjWILNpw0DdwZIA"/>
+      <text x="476" y="204" class="svgtext" font-size="11.5" fill="#fff" text-anchor="middle" data-page-node-id="bjlxm8wvDLVkcuRYGxwHLH">index.md / overview.md / log.md — 每次 ingest 自动更新</text>
+      <!-- edges -->
+      <line x1="446" y1="91" x2="506" y2="91" stroke="#E9D5C9" stroke-width="1.5" data-page-node-id="fCBqe6dSdH10sp7TSTT7xq"/>
+      <line x1="381" y1="106" x2="381" y2="130" stroke="#E9D5C9" stroke-width="1.5" data-page-node-id="XAEFt9Yck046tqLPoTQAFb"/>
+      <line x1="571" y1="106" x2="571" y2="130" stroke="#E9D5C9" stroke-width="1.5" data-page-node-id="vC2ovuDxYcFaZ3EHcq09w2"/>
+      <line x1="446" y1="145" x2="506" y2="145" stroke="#E9D5C9" stroke-width="1.5" data-page-node-id="1b4q7HV7Ro7P1vdlKrFJUp"/>
+      <text x="476" y="252" class="svgtext" font-size="12" fill="#A8A29E" text-anchor="middle" data-page-node-id="dZg0SVyIJ0WopcYUbT8Ibk">页面之间用 [[双链]] 互连 —— 这就是知识图谱的边</text>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="orQyx6ib9uzCpSHkegCHoy">▲ 原始资料不可变；模型只写 wiki/ 层，每读一篇新资料，Wiki 就变厚一点</p>
+</section>
+
+<!-- ============ 02 与 RAG 的区别 ============ -->
+<section data-page-node-id="FzLYUzjrpC6bR2B5AoUQbI">
+  <div class="secnum" data-page-node-id="1CkscrJT2qFpId7Vk0RT32">02</div>
+  <h2 data-page-node-id="XuA7XdpSNrfFZW49MHFsDW">与 RAG 的区别 —— 临时翻书 vs 整理成册</h2>
+  <p class="lead" data-page-node-id="E2ukKjPapcrvqyjvyXuLlX">RAG 每次提问都去原始文档里<b data-page-node-id="LnpjT3kgeoeiUuA8Mnq9N9">检索碎片</b>，用完即忘；LLM Wiki 先把资料<b data-page-node-id="yLvNNNGC5zzxjqR7PfH5pg">消化整理</b>成结构化百科，之后所有问答都基于它。</p>
+
+  <div class="card" data-page-node-id="BxLuuUXynVKJtd0dTwFUAR">
+    <svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" data-page-node-id="kgVLrDoQSMCgODANbAH6sf">
+      <!-- RAG row -->
+      <text x="20" y="34" class="svgtext" font-size="14" fill="#78716C" font-weight="600" data-page-node-id="cS4nX2lYcnuMFtoKjNT89m">传统 RAG —— 每次提问，临时检索</text>
+      <rect x="20" y="52" width="140" height="46" rx="8" fill="#F1EDE7" stroke="#E8E3DC" data-page-node-id="ETgg2ACbK8qjXWZiczQkzg"/>
+      <text x="90" y="80" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle" data-page-node-id="giHGw4PVbXBU8s5BHhqZ16">原始文档堆</text>
+      <line x1="160" y1="75" x2="224" y2="75" stroke="#A8A29E" stroke-width="2" data-page-node-id="pD8CJhOq2eaORtsfFNjFp8"/>
+      <polygon points="224,70 236,75 224,80" fill="#A8A29E" data-page-node-id="VYQ4L63jxGRB458KpshPsi"/>
+      <text x="192" y="62" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="3SNzaVf6uHUVO46SRfe346">检索碎片</text>
+      <rect x="240" y="52" width="140" height="46" rx="8" fill="#F1EDE7" stroke="#E8E3DC" data-page-node-id="mcHEDzTavbSamZ9A4bt4TU"/>
+      <text x="310" y="80" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle" data-page-node-id="AITulF6KljlRnNos7O3ujK">向量检索</text>
+      <line x1="380" y1="75" x2="444" y2="75" stroke="#A8A29E" stroke-width="2" data-page-node-id="Tth2huRROOPJmMPSFZ61aw"/>
+      <polygon points="444,70 456,75 444,80" fill="#A8A29E" data-page-node-id="9Mneq4tLui6FuzpHVpbiMS"/>
+      <rect x="460" y="52" width="200" height="46" rx="8" fill="#FFFFFF" stroke="#E8E3DC" data-page-node-id="emPBc8CeRbgpTXFBwcJroK"/>
+      <text x="560" y="74" class="svgtext" font-size="11.5" fill="#B4433A" text-anchor="middle" data-page-node-id="Gm6CyqedWB4b5r80oovNic">回答后丢弃 →</text>
+      <text x="560" y="90" class="svgtext" font-size="11.5" fill="#B4433A" text-anchor="middle" data-page-node-id="gthaEVPErS8MVlmZHOceal">下次重头再来</text>
+      <!-- divider -->
+      <line x1="20" y1="140" x2="660" y2="140" stroke="#E8E3DC" stroke-width="1.5" stroke-dasharray="2 6" data-page-node-id="RHNmcD0ddxGP0WSdscoAoA"/>
+      <!-- Wiki row -->
+      <text x="20" y="174" class="svgtext" font-size="14" fill="#C4633F" font-weight="600" data-page-node-id="rywUJsgJGkEfuGwi0EGATz">LLM Wiki —— 先编译，再提问</text>
+      <rect x="20" y="192" width="140" height="46" rx="8" fill="#F1EDE7" stroke="#E8E3DC" data-page-node-id="aDxRGdG7PZXcGsUDqDLW9Y"/>
+      <text x="90" y="220" class="svgtext" font-size="12" fill="#78716C" text-anchor="middle" data-page-node-id="eFWTP2grHQCLd3BjzGj76A">原始文档堆</text>
+      <line x1="160" y1="215" x2="224" y2="215" stroke="#C4633F" stroke-width="2" data-page-node-id="dKAsgQ4pe8rvqNxUGb6rXJ"/>
+      <polygon points="224,210 236,215 224,220" fill="#C4633F" data-page-node-id="zMoOKqqsJV3AzBtrrdRFa0"/>
+      <text x="192" y="202" class="svgtext" font-size="11" fill="#C4633F" text-anchor="middle" data-page-node-id="ZnDhpKb9yDH3lAZtNWgjrG">一次编译</text>
+      <rect x="240" y="192" width="180" height="46" rx="8" fill="#F7EBE4" stroke="#C4633F" stroke-width="1.5" data-page-node-id="0nz79oBSO2ER9Di1KJxSrt"/>
+      <text x="330" y="220" class="svgtext" font-size="12" fill="#C4633F" text-anchor="middle" data-page-node-id="Q8d41ouca8ujDPTzRgGsh5">结构化 Wiki（持久）</text>
+      <line x1="420" y1="215" x2="484" y2="215" stroke="#C4633F" stroke-width="2" data-page-node-id="zvWwErWL5PpqXs01ZfOMd4"/>
+      <polygon points="484,210 496,215 484,220" fill="#C4633F" data-page-node-id="HOhjhqZym2t9LDWnqRRvsi"/>
+      <rect x="500" y="192" width="160" height="46" rx="8" fill="#C4633F" data-page-node-id="e0Gbp7UepaLnenzBepTjua"/>
+      <text x="580" y="214" class="svgtext" font-size="11.5" fill="#fff" text-anchor="middle" data-page-node-id="1oe8L25V29S0Si49zdeX8M">基于 Wiki 提问</text>
+      <text x="580" y="230" class="svgtext" font-size="11.5" fill="#F7EBE4" text-anchor="middle" data-page-node-id="VOE0uOd1p2tUytXIbwhbYd">带 [[引用]] 的回答</text>
+      <!-- comparison notes -->
+      <rect x="20" y="268" width="200" height="40" rx="8" fill="#FFFFFF" stroke="#E8E3DC" data-page-node-id="LaZwlSwgYG8Qas1ZeMDntw"/>
+      <text x="120" y="285" class="svgtext" font-size="11.5" fill="#292524" text-anchor="middle" data-page-node-id="eAdo1lhdeNHPdgGIuoYnm6">RAG：检索碎片、无沉淀</text>
+      <text x="120" y="300" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="CnJKHdkPfCuY4TAX6nqo15">每次都付长文本的 token</text>
+      <rect x="240" y="268" width="200" height="40" rx="8" fill="#FFFFFF" stroke="#E8E3DC" data-page-node-id="iEN526Y5MGDVcFPs0DwtsE"/>
+      <text x="340" y="285" class="svgtext" font-size="11.5" fill="#292524" text-anchor="middle" data-page-node-id="O67iTc0jqCEti2vL21HOnV">Wiki：关系清晰、可推理</text>
+      <text x="340" y="300" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="Xt8zgzyQ3CpJchgOA1iPla">矛盾在编译时就标记</text>
+      <rect x="460" y="268" width="200" height="40" rx="8" fill="#FFFFFF" stroke="#E8E3DC" data-page-node-id="xlNzyDhC38xETUENVjImbj"/>
+      <text x="560" y="285" class="svgtext" font-size="11.5" fill="#292524" text-anchor="middle" data-page-node-id="kmW58utiHeHPHOKwslvCCE">Wiki：可审核、可回滚</text>
+      <text x="560" y="300" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="zvmFlRas9O3ndJtuQszuIl">纯 Markdown + Git 管理</text>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="PjceQjzaQVacKR0xebYjPD">▲ 一句话：RAG 是临时翻书，LLM Wiki 是 AI 帮你整理了一本不断更新的内部百科</p>
+</section>
+
+<!-- ============ 03 三层结构 ============ -->
+<section data-page-node-id="0taXJgQb8rglJgVUyGFiM2">
+  <div class="secnum" data-page-node-id="NUFZUWIPQCGOQLzbt8ePYM">03</div>
+  <h2 data-page-node-id="5bQpfKKPZLa7btFGXiDAZe">三层结构 —— 不可变层 · 知识层 · 图谱层</h2>
+  <p class="lead" data-page-node-id="2Evy0cSoEFKNI1oMSbSQCC">整个系统分三层：<b data-page-node-id="d2usDNk0tiZQYatX2Nnvqb">raw/</b> 原文永不改动，<b data-page-node-id="kXMka0vvXNXJB5f0VTXNy9">wiki/</b> 由模型全权维护，<b data-page-node-id="pR0bFTMiLb3F0gqwPx9r8y">graph/</b> 从双链自动生成可视化。</p>
+
+  <div class="card" data-page-node-id="PnH0kRaJiw5FHqFJrWNVrD">
+    <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" data-page-node-id="it2lyFaxxHaFbfYyOFTl4B">
+      <!-- Layer 1 -->
+      <rect x="20" y="20" width="640" height="72" rx="10" fill="#F1EDE7" stroke="#E8E3DC" data-page-node-id="gj3Ws2DgDpTna9JDFWmm5E"/>
+      <text x="44" y="48" class="svgtext" font-size="14" fill="#78716C" font-weight="700" data-page-node-id="D5jCB1tjp8vKQwGmnW8Q8q">① raw/ —— 不可变源层</text>
+      <text x="44" y="72" class="svgtext" font-size="12.5" fill="#A8A29E" data-page-node-id="urvdsWhjDwIgoMGvrDcLTE">原始文档只进不改 · 支持 md / pdf / docx / pptx / html / csv / epub…（非 md 自动转换）</text>
+      <!-- arrow -->
+      <line x1="340" y1="92" x2="340" y2="124" stroke="#C4633F" stroke-width="2.5" data-page-node-id="ZNqnNLDjE5NZjDLPhyIpOr"/>
+      <polygon points="334,124 340,138 346,124" fill="#C4633F" data-page-node-id="Q0edpZ8HBg8tB1jal9XDbb"/>
+      <text x="366" y="124" class="svgtext" font-size="11.5" fill="#C4633F" data-page-node-id="2nkJ2j4CiXlxxqDcGNsdVu">ingest（提取知识）</text>
+      <!-- Layer 2 -->
+      <rect x="20" y="142" width="640" height="132" rx="10" fill="#FFFFFF" stroke="#C4633F" stroke-width="2" data-page-node-id="qQp7Z64r9h3JFSFrliSZK8"/>
+      <text x="44" y="170" class="svgtext" font-size="14" fill="#C4633F" font-weight="700" data-page-node-id="KSXMj0oj1x8r4Gd1ofNivx">② wiki/ —— 知识层（模型全权维护）</text>
+      <rect x="44" y="182" width="184" height="34" rx="6" fill="#F7EBE4" data-page-node-id="3UMdvy3Xsv6YATiDVCsbtM"/>
+      <text x="136" y="204" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="bBUokxzub7oL6kzgPhFMNh">sources/ 每源一页</text>
+      <rect x="248" y="182" width="184" height="34" rx="6" fill="#F7EBE4" data-page-node-id="SRNAvFvfkBG3ggZMguPmrz"/>
+      <text x="340" y="204" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="1AwZSIdDvETxqQ7xUzx3rM">entities/ 人·组织·项目</text>
+      <rect x="452" y="182" width="184" height="34" rx="6" fill="#F7EBE4" data-page-node-id="MJM6oBv0xdSdvVyWksceWG"/>
+      <text x="544" y="204" class="svgtext" font-size="11.5" fill="#C4633F" text-anchor="middle" data-page-node-id="1B7QusaKWICRzRAnBmMQS3">concepts/ 思想·方法</text>
+      <rect x="44" y="228" width="288" height="34" rx="6" fill="#F1EDE7" data-page-node-id="ZKCBSJx0ocN4jChFdpLxsX"/>
+      <text x="188" y="250" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="fJEFdBnBvVwS3ZDEW1ndeY">syntheses/ 提问的答案归档成页</text>
+      <rect x="348" y="228" width="288" height="34" rx="6" fill="#F1EDE7" data-page-node-id="5QwiqAIQEjeKbcGsLNF01I"/>
+      <text x="492" y="250" class="svgtext" font-size="11.5" fill="#78716C" text-anchor="middle" data-page-node-id="N4xzhw8sA7U9u7B81Az97X">index / overview / log —— 目录·综述·日志</text>
+      <!-- arrow -->
+      <line x1="340" y1="274" x2="340" y2="298" stroke="#C4633F" stroke-width="2.5" stroke-dasharray="5 4" data-page-node-id="rpSixBi1mDsEpTPmbmLAYk"/>
+      <polygon points="334,298 340,312 346,298" fill="#C4633F" data-page-node-id="Hlfjs56EFCuIH00I8ndzrX"/>
+      <text x="366" y="298" class="svgtext" font-size="11.5" fill="#C4633F" data-page-node-id="fQHw7gvwaUlWuDO1ErVFcC">build graph（解析双链）</text>
+      <!-- Layer 3 -->
+      <rect x="20" y="316" width="640" height="4" rx="2" fill="none" data-page-node-id="feurfrHUWHhz24y9EmIsxG"/>
+      <rect x="20" y="322" width="640" height="12" rx="6" fill="#E9E2D9" data-page-node-id="bRLzmHf9hfvNOAjSCgHtES"/>
+      <text x="340" y="332" class="svgtext" font-size="10.5" fill="#78716C" text-anchor="middle" data-page-node-id="2rbu5WRni7As8zmXmy83vB">③ graph/ —— graph.json + graph.html（vis.js 交互图谱 · 社区聚类）</text>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="FT6Ou1lMFDrmABlM4GPzCd">▲ 关键约束：模型永远不碰 raw/，人类永远不必写 wiki/</p>
+</section>
+
+<!-- ============ 04 工作流 ============ -->
+<section data-page-node-id="laCNkdv7FVJVn06NB38PAP">
+  <div class="secnum" data-page-node-id="DwIUVcVbwZsFDqQu7sxNx5">04</div>
+  <h2 data-page-node-id="q9gVoUKf6g1QzEK4dQVR98">工作流 —— 四个动词</h2>
+  <p class="lead" data-page-node-id="9S8hJqdGgAwZMREGh9LKcO">日常使用只需记四个触发词：<code style="font-family:var(--mono);background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px;font-size:.9em" data-page-node-id="1YliY44JH32cqfIO7NYX6C">ingest</code> · <code style="font-family:var(--mono);background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px;font-size:.9em" data-page-node-id="YrNEAmczQoWIMOKyX6wSiR">query</code> · <code style="font-family:var(--mono);background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px;font-size:.9em" data-page-node-id="TdKr5wjeRG0RBGXZwzzcBd">lint</code> · <code style="font-family:var(--mono);background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:5px;font-size:.9em" data-page-node-id="TK0qI40paTSY6wPhvy9f5L">graph</code>，外加一个每会话先跑的 <b data-page-node-id="LQDxbaT3DHk28EoDCMdjvs">health</b>。</p>
+
+  <div class="card" data-page-node-id="RP1xoTcPiiASsdkC6I4SF3">
+    <svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg" data-page-node-id="WFUfMCl6LEwoqaiC3LiZie">
+      <!-- pipeline -->
+      <rect x="20" y="40" width="130" height="56" rx="10" fill="#F1EDE7" stroke="#E8E3DC" data-page-node-id="FzRcLuo1VmAt5VjeB7seTh"/>
+      <text x="85" y="64" class="svgtext" font-size="12.5" fill="#78716C" text-anchor="middle" font-weight="600" data-page-node-id="AOaQ2R7KFtedKK6RDDGcR1">丢进来</text>
+      <text x="85" y="82" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="9cIFtDyrK6D9MDBp3AzZof">drop / 粘贴</text>
+      <line x1="150" y1="68" x2="196" y2="68" stroke="#C4633F" stroke-width="2" data-page-node-id="t2bVHwrwyejNkKcj8IwDB8"/>
+      <polygon points="196,63 208,68 196,73" fill="#C4633F" data-page-node-id="SR1vrlGArb1kdGvL6q0EOD"/>
+      <rect x="212" y="40" width="130" height="56" rx="10" fill="#F7EBE4" stroke="#C4633F" stroke-width="1.5" data-page-node-id="QdnPFfALXFGnKxqkvzZsoP"/>
+      <text x="277" y="64" class="svgtext" font-size="12.5" fill="#C4633F" text-anchor="middle" font-weight="600" data-page-node-id="3an1mlw4UMpx0NxQ1C6WV6">ingest</text>
+      <text x="277" y="82" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="IKOZWGgjjBq6UpkiKKwVKT">提取→写 wiki</text>
+      <line x1="342" y1="68" x2="388" y2="68" stroke="#C4633F" stroke-width="2" data-page-node-id="Fk9TlD3c7WnRUJaAKTcV2W"/>
+      <polygon points="388,63 400,68 388,73" fill="#C4633F" data-page-node-id="dc2N3CTFWr0GH6RzFddYLs"/>
+      <rect x="404" y="40" width="130" height="56" rx="10" fill="#F7EBE4" stroke="#C4633F" stroke-width="1.5" data-page-node-id="MQUNLJAW64vHlhyje531Lr"/>
+      <text x="469" y="64" class="svgtext" font-size="12.5" fill="#C4633F" text-anchor="middle" font-weight="600" data-page-node-id="ZaLLcXn2JWEbpLHGFNsAcF">query</text>
+      <text x="469" y="82" class="svgtext" font-size="11" fill="#A8A29E" text-anchor="middle" data-page-node-id="WtCtjU59fhbUbVGaJ3pNgn">基于 wiki 作答</text>
+      <line x1="534" y1="68" x2="580" y2="68" stroke="#C4633F" stroke-width="2" data-page-node-id="PiGePQTS9Daq7w1oJujiet"/>
+      <polygon points="580,63 592,68 580,73" fill="#C4633F" data-page-node-id="FYekXN7T7PDJl8XjGLRuKN"/>
+      <rect x="596" y="40" width="64" height="56" rx="10" fill="#C4633F" data-page-node-id="7f8OUML5eaYHsd7tNQBjJo"/>
+      <text x="628" y="72" class="svgtext" font-size="11.5" fill="#fff" text-anchor="middle" data-page-node-id="AVyGQs2BQuCKgnXxcfazTf">你</text>
+      <!-- checks -->
+      <rect x="20" y="130" width="316" height="86" rx="10" fill="#FFFFFF" stroke="#E8E3DC" data-page-node-id="fDJBu2gjLsPjWH9fWol108"/>
+      <text x="44" y="158" class="svgtext" font-size="13" fill="#3D7A50" font-weight="700" data-page-node-id="TSgZIedfictoKfDedUM3Ei">health —— 每会话先跑（零 LLM 调用）</text>
+      <text x="44" y="180" class="svgtext" font-size="12" fill="#78716C" data-page-node-id="g6CoAldFYBU9IDJZJuRppM">空文件 / 索引同步 / 日志覆盖 —— 结构体检</text>
+      <text x="44" y="200" class="svgtext" font-size="11.5" fill="#A8A29E" data-page-node-id="nkLnwoyenHM23KsoFzjHCX">损坏在写入时就发现，不浪费后续 token</text>
+      <rect x="356" y="130" width="304" height="86" rx="10" fill="#FFFFFF" stroke="#E8E3DC" data-page-node-id="I7CvErROkbwMtCHxF9fbeF"/>
+      <text x="380" y="158" class="svgtext" font-size="13" fill="#C4633F" font-weight="700" data-page-node-id="pmtuTFrhy8IbDtb316fwQb">lint —— 每 10-15 次 ingest 跑一次</text>
+      <text x="380" y="180" class="svgtext" font-size="12" fill="#78716C" data-page-node-id="u44gW7xMGOxlF46kjwCRnm">孤儿页 / 断链 / 矛盾 / 缺失实体 —— 语义体检</text>
+      <text x="380" y="200" class="svgtext" font-size="11.5" fill="#A8A29E" data-page-node-id="WU9O1z5XFKoTbPrdPFxF8n">还会建议「该补哪些资料」来填补知识缺口</text>
+    </svg>
+  </div>
+  <p class="caption" data-page-node-id="MGa7QkLvJX1BDktZwFcSHo">▲ 顺序：health → ingest → query，定期 lint；graph 随时可建</p>
+</section>
+
+<!-- ============ 05 铁律 ============ -->
+<section data-page-node-id="JCo50wGgDc9MCJbglXhdwx">
+  <div class="secnum" data-page-node-id="ZLMQcnGqh1RrLH5ktVOvUk">05</div>
+  <h2 data-page-node-id="a7shoEEhoATx60ej2v0nLI">五条铁律</h2>
+  <div class="rules" data-page-node-id="9M81S4SF4axe9xvWsbgwFd">
+    <div class="rule" data-page-node-id="lhz5UjuhbCKDPcWiHEq77l"><span class="rn" data-page-node-id="2dsEKRWylesBuFPld7dD84">1</span><div data-page-node-id="BiEhyl72FE1m95WQAkQ3fI">
+      <div class="rt" data-page-node-id="8K0xJT8jMcXj8rdrlXXep2"><b data-page-node-id="lehYcutBpzsSDQ7jnQG0Ya">raw/ 不可变</b> —— 源文档永不修改</div>
+      <div class="rd" data-page-node-id="OaA1hHUtWprLBkWxAcAG9P">保真：知识层出错可以随时从源头重建。</div></div></div>
+    <div class="rule" data-page-node-id="vlMDA7asb3EybLukfARIPc"><span class="rn" data-page-node-id="Lh5adFEN1NvxwKNxJArDVf">2</span><div data-page-node-id="eFsFo9YpHGmk3hnEcj4phu">
+      <div class="rt" data-page-node-id="DCG4I67NI2Wd9kfFaWKUNc"><b data-page-node-id="g148SSQjHLw6oXDbCGdbBD">先编译，再提问</b> —— 问答基于 Wiki 页面</div>
+      <div class="rd" data-page-node-id="KRIkEJBjOuMqNv1vbxFX4F">回答带 <code data-page-node-id="QPwZJ2K1n0Mt5s0tkESbrj">[[页面]]</code> 内联引用，可回溯到源。</div></div></div>
+    <div class="rule" data-page-node-id="z0WXhxb2SIMGOs8LiifB6q"><span class="rn" data-page-node-id="OArDaSmYRJzNwGdoKFH93o">3</span><div data-page-node-id="TdCIsXsoCQJ7ejfXu2f8GL">
+      <div class="rt" data-page-node-id="6lKKk7rDsFgVeYPTND28eg"><b data-page-node-id="ChUie5mHEnv0TgsAxlWBVn">矛盾在 ingest 时标记</b>，不等 query 时暴雷</div>
+      <div class="rd" data-page-node-id="Xz3WdST2PzXVbeoYMW46Fq">新资料与已有主张冲突，当场写在页面里。</div></div></div>
+    <div class="rule" data-page-node-id="nQyOtUZJ0adxTmV714d81P"><span class="rn" data-page-node-id="KJZx3zuvzvcVeop8bIrAGc">4</span><div data-page-node-id="HC3oiVdNkNCfrruAFW2M2B">
+      <div class="rt" data-page-node-id="GVDZIy8R8FUSSPmCVjxGFc"><b data-page-node-id="Ft3Oel8ZKIer14kqKlbteF">双链是骨架</b>，页面互链构成知识图谱</div>
+      <div class="rd" data-page-node-id="ewBYI2ZL2AdbVRGF350FX9"><code data-page-node-id="wdhBge5fawALQL56hKTtHW">[[wikilinks]]</code> 即图谱的边，Obsidian 可直接打开浏览。</div></div></div>
+    <div class="rule" data-page-node-id="VMSpGvN1lS5Km0GZfqgTPz"><span class="rn" data-page-node-id="CuWDCJ6b6leHk0K2M2te7D">5</span><div data-page-node-id="ei5GYQyrXLVxcex1ZYeDzp">
+      <div class="rt" data-page-node-id="rYztajETfOW99RHH6rj1YH">纯 Markdown + <b data-page-node-id="LRnGosKWXskxt3qGMAyDrQ">Git 版本控制</b>，防模型乱改</div>
+      <div class="rd" data-page-node-id="lT6FlDD32buADKOazYkWCV">每次 ingest 都能 diff 审核、都能回滚——比黑盒 RAG 可控。</div></div></div>
+  </div>
+</section>
+
+<!-- ============ 06 溯源 ============ -->
+<section data-page-node-id="wFpOVkPfHFZra4QqYKxges">
+  <div class="secnum" data-page-node-id="jGZc4G67U1mnA7G6O32MC2">06</div>
+  <h2 data-page-node-id="wz71coCAIJFs3m2JB71TH8">原始出处 · 点击验证</h2>
+  <div class="src" data-page-node-id="zaguSngYkSxBiWYJLWvHpM">
+    <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener" data-page-node-id="24tPSif5AqNFrWPANFCDgI">
+      <div class="st" data-page-node-id="0zdFnQWglfjDv978ZV8Pca">Karpathy：用 LLM 增量构建个人 Wiki（思想源头）</div>
+      <div class="sd" data-page-node-id="8G1hAH2RXdv9xq9gyr5Tur">Andrej Karpathy 的 Gist · 「让模型读所有资料并维护结构化 wiki，而不是 RAG」范式的提出处</div>
+      <div class="sl" data-page-node-id="gkJSUHTBhD3qHeIA8qclcY">gist.github.com/karpathy/442a6bf555914893e9891c11519de94f</div>
+    </a>
+    <a href="https://github.com/SamurAIGPT/llm-wiki-agent" target="_blank" rel="noopener" data-page-node-id="n4CA20q2QQ2BUPmajZXwUP">
+      <div class="st" data-page-node-id="PIR7Fl99KAAOv5NEFMwsXB">SamurAIGPT/llm-wiki-agent（本仓库已安装的实现）</div>
+      <div class="sd" data-page-node-id="Qe2BVsHRqqzrM0hIrPl1F0">3499+ stars · CLAUDE.md / AGENTS.md / GEMINI.md 定义完整 schema：ingest / query / lint / health / graph 工作流</div>
+      <div class="sl" data-page-node-id="sqA6W59VJGF5PMaDYGizLW">github.com/SamurAIGPT/llm-wiki-agent</div>
+    </a>
+    <a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener" data-page-node-id="zh6kkhUj22fXFpV7O8YYUI">
+      <div class="st" data-page-node-id="eHoS5w8FhZbsLZ6ybBrlMr">markitdown（格式转换依赖）</div>
+      <div class="sd" data-page-node-id="cXj6d0HwZX8nlidL0MGE9F">Microsoft 官方 · ingest 时 PDF / DOCX / PPTX / HTML 等自动转 Markdown 的底层工具</div>
+      <div class="sl" data-page-node-id="LNcR5AuhnSYoeFWT4J8mlQ">github.com/microsoft/markitdown</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 07 自测 ============ -->
+<section data-page-node-id="iu5gddGSscDilLQ8ZQLK7T">
+  <div class="secnum" data-page-node-id="MS5b8Vq9JFyxJmg2SLOn35">07</div>
+  <h2 data-page-node-id="JDnynGFSpkc2eGLMqdlWJQ">自测 · 难度递进</h2>
+  <p class="lead" data-page-node-id="XieurBNDV0LbFuokuEhox5">三级递进：基础（识别）→ 进阶（理解）→ 挑战（应用）。</p>
+  <div class="card" id="quiz" data-page-node-id="ibbuLWSt819L0fBHmcy3Xb"></div>
+</section>
+
+<footer data-page-node-id="DZRZBGFGyuxwuBeTaeoron">
+  本手册依据上述原始出处整理，生成于 2026-09-09。配套实现 llm-wiki-agent/ 已安装于本仓库。
+</footer>
+</div>
+
+<script>
+const QUIZ=[
+  {lv:1,lt:"基础 · 识别",q:"LLM Wiki 的核心思想是什么？",
+   o:["用大模型生成维基百科词条","先把资料编译成结构化互链的持久 Wiki，之后所有问答基于它","让大模型实时搜索互联网回答问题","把笔记转成 PDF 归档"],a:1,
+   e:"LLM Wiki = <b>先消化整理，再提问</b>。不是写百科全书，而是一套知识管理范式（见第 01 节）。"},
+  {lv:1,lt:"基础 · 识别",q:"raw/ 目录中的源文档应如何处理？",
+   o:["让模型随时改写以保持最新","只进不改，永远保持原样","定期删除过期的","加密后上传云端"],a:1,
+   e:"raw/ 是<b>不可变源层</b>：模型永远不碰它，知识层出错可随时从源头重建（见第 03 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"相比传统 RAG，LLM Wiki 的主要优势不包括？",
+   o:["知识可沉淀、可积累","回答带引用、可回溯","每次提问都要重新读全部原始长文档","可人工审核、可版本控制"],a:2,
+   e:"「反复读原文」恰是 RAG 的代价。LLM Wiki 问答基于已消化的 Wiki 页面，<b>节省 token</b>（见第 02 节）。"},
+  {lv:2,lt:"进阶 · 理解",q:"health 与 lint 的分工是？",
+   o:["health 查内容质量，lint 查结构完整性","health 零 LLM 调用查结构，lint 用 LLM 做语义分析","两者完全等价，随便用哪个","health 是必跑的，lint 已经废弃"],a:1,
+   e:"health：<b>结构体检</b>（空文件/索引同步），零 LLM、每次会话先跑；lint：<b>语义体检</b>（孤儿页/矛盾/缺口），耗 token、定期跑（见第 04 节）。"},
+  {lv:3,lt:"挑战 · 应用",q:"ingest 一篇新论文时，发现它与 Wiki 已有页面观点冲突。正确的处理是？",
+   o:["以新论文为准，覆盖旧观点","以旧页面为准，忽略新论文","在 ingest 时当场标记矛盾，两边都保留并互相引用","删除冲突页面，等人工裁决"],a:2,
+   e:"矛盾<b>在编译时标记</b>——新页面记录「与 [[某页] 在某点冲突」，两个来源都保留，由你裁决（见第 05 节铁律 3）。"},
+  {lv:3,lt:"挑战 · 应用",q:"模型昨晚批量 ingest 后疑似中途断掉，部分页面可能残缺。此刻第一步该做什么？",
+   o:["直接 lint 全库找语义问题","先跑 health 做结构体检，再决定是否修复","删除整个 wiki/ 重建","重新 ingest 所有原始文档"],a:1,
+   e:"先 <b>health</b>：零成本查出空文件、索引失同步、日志缺口；对残缺文件定向重 ingest。先 lint 会把 token 浪费在语义分析残缺页上（见第 04 节）。"}
+];
+const box=document.getElementById("quiz");
+let cur=0,score=0,lvScore={1:0,2:0,3:0},lvTotal={1:2,2:2,3:2},answered=false;
+function render(){
+  answered=false;
+  const Q=QUIZ[cur];
+  const lvCls=Q.lv===1?"lv1":(Q.lv===2?"lv2":"lv3");
+  let h=`<span class="qlevel ${lvCls}">${Q.lt}</span>
+    <div class="qq"><span class="qidx">${cur+1} / ${QUIZ.length}</span>${Q.q}</div><div class="opts">`;
+  Q.o.forEach((t,i)=>{h+=`<button class="opt" onclick="pick(${i})"><span class="tag">${"ABCD"[i]}</span>${t}</button>`;});
+  h+=`</div><div id="fb"></div><div class="btnrow"><button class="btn" id="nx" disabled>下一题</button></div>`;
+  box.innerHTML=h;
+  document.getElementById("nx").onclick=next;
+}
+window.pick=function(i){
+  if(answered)return; answered=true;
+  const Q=QUIZ[cur],btns=box.querySelectorAll(".opt");
+  btns.forEach((b,j)=>{b.disabled=true;if(j===Q.a)b.classList.add("right");});
+  if(i===Q.a){score++;lvScore[Q.lv]++;}
+  else btns[i].classList.add("wrong");
+  document.getElementById("fb").innerHTML=`<div class="explain">${i===Q.a?"✓ 正确。":"✗ 再看一眼。"} ${Q.e}</div>`;
+  const nx=document.getElementById("nx");
+  nx.disabled=false; nx.textContent=(cur===QUIZ.length-1)?"查看成绩":"下一题";
+};
+function next(){
+  if(!answered)return;
+  cur++;
+  if(cur<QUIZ.length){render();return;}
+  const v=score===6?"全部正确——LLM Wiki 的编译-提问范式你已经吃透。"
+        :score>=4?"不错——回到标错的章节，重点重看第 02 节的对比图和第 04 节的工作流。"
+        :"建议从第 01 节重新过一遍，先分清「RAG 临时检索」和「Wiki 先编译」的本质差异。";
+  box.innerHTML=`<div class="result">
+    <div class="score">${score} / 6</div>
+    <div style="color:var(--ink2);margin-top:6px;font-size:14px">
+      基础 ${lvScore[1]}/${lvTotal[1]} · 进阶 ${lvScore[2]}/${lvTotal[2]} · 挑战 ${lvScore[3]}/${lvTotal[3]}</div>
+    <div class="verdict">${v}</div>
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn" onclick="reset()">重新自测</button></div>
+  </div>`;
+}
+window.reset=function(){cur=0;score=0;lvScore={1:0,2:0,3:0};render();};
+render();
+</script>
+</body>
+</html>
